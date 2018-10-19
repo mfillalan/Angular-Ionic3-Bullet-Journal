@@ -7,14 +7,25 @@
     </ion-buttons>
     
     <ion-title>
-      Ionic Blank
+      Bullet Journal
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
   <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
+    {{ monthNames[date.getMonth()] }}
   </p>
+  <p>
+    {{ date.getDay() + " " + dayNames[date.getDay()] }}
+  </p>
+  <ion-list>
+    <ion-item>
+      <ion-label fixed>Item 1</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>Item 2</ion-label>
+    </ion-item>
+  </ion-list>
+  <button ion-button>Add Task</button>
 </ion-content>
