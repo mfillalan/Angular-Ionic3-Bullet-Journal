@@ -5,6 +5,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Injectable } from "@angular/core";
 //import { Storage } from "@ionic/storage";
 import { Task } from "../models/task.model";
+import { Toast } from '@ionic-native/toast';
 
 @Injectable()
 export class SqliteService {
@@ -21,15 +22,17 @@ export class SqliteService {
     public entries: Entry[] = [];
     public reusableTasks: ReusableTask[] = [];
 
-    constructor(private sqlite: SQLite) {}
+    constructor(private sqlite: SQLite, private toast: Toast) {}
 
     //#region [rgba(155, 89, 182, 0.15)]
+    //Entry Table Functions
+
     /**
      * @description Loads the data in the Entry table in the SQLite database into the entries[] array.
      */
     loadAllEntries() {
         console.log("Entering loadEntries() ------------");
-        this.sqlite.create({
+        return this.sqlite.create({
             name: this.dbName,
             location: this.dbLocation
         })
@@ -47,7 +50,76 @@ export class SqliteService {
                 console.log("SQLite CREATE Error: ", "background: #ea5959");
                 console.log(e);
             });
+
+            //Grab all Entry records in the SQLite table Entry.
+            console.log("Executing SQL [SELECT * FROM Entry ORDER BY rowid DESC] :");
+            return db.executeSql('SELECT * FROM Entry ORDER BY rowid DESC', {} as any)
+            .then(res => {
+              console.log("Results: " + res);
+
+              this.entries = []; //clear array
+
+              for(var i=0; i < res.rows.length; i++) {
+                this.entries.push({rowid: res.rows.item(i).rowid, date: res.rows.item(i).date});
+              }
+              console.log("Successfully pushed { " + res.rows.length + " } records into entries[] array.");
+            })
+            .catch(e => {
+              console.log("!! Error: ", "background: #ea5959");
+              console.log(e);
+            });
+
         })
+    }
+
+    addEntry() {
+      this.sqlite.create({
+        name: this.dbName,
+        location: this.dbLocation
+      })
+      .then((db: SQLiteObject) => {
+        db.executeSql("INSERT INTO Entry VALUES(NULL, date('now'))", {} as any)
+        .then(res => {
+          console.log("New Entry added");
+          console.log(res);
+
+          this.toast.show("New Entry added", '5000', 'center').subscribe(
+            toast => {
+              console.log(toast);
+            }
+          );
+
+        })
+      })
+    }
+
+    deleteEntry(rowid: number) {
+      return this.sqlite.create({
+        name: this.dbName,
+        location: this.dbLocation
+      })
+      .then((db: SQLiteObject) => {
+
+        console.log("Executing SQL [DELETE FROM Entry WHERE rowid = " + rowid.toString() + "] :");
+        db.executeSql('DELETE FROM Entry WHERE rowid = ?', [rowid])
+        .then(res => {
+          console.log("Results: ");
+          console.log(res);
+          const index = this.entries.findIndex(entry => entry.rowid === rowid);
+          if(index !== -1) {
+            this.entries.splice(index, 1);
+          }
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+        })
+
+      })
+      .catch(e => {
+        console.log("!! Error running SQL: ");
+        console.log(e);
+      })
     }
     //#endregion
 
@@ -88,7 +160,7 @@ export class SqliteService {
 
                 //loop through the results of the sql and push each record into goals[] array.
                 for(var i=0; i < res.rows.length; i++) {
-                    this.goals.push({rowid: res.rows.item(i).rowid, 
+                    this.goals.push({rowid: res.rows.item(i).rowid,
                                      name: res.rows.item(i).name,
                                      desc: res.rows.item(i).desc,
                                      amt_completed: res.rows.item(i).amt_completed});
@@ -101,7 +173,7 @@ export class SqliteService {
 
 
         })
-        
+
     }
     //#endregion
 
@@ -114,7 +186,7 @@ export class SqliteService {
             name: this.dbName,
             location: this.dbLocation
         })
-        .then((db: SQLiteObject) => {
+        .then((db: SQLiteObject) => {1
 
             //Create the ReusableTask table if it doesn't already exist.
             db.executeSql(`CREATE TABLE IF NOT EXISTS
@@ -148,7 +220,7 @@ export class SqliteService {
             })
 
         })
-        
+
     }
     //#endregion
 
@@ -164,10 +236,10 @@ export class SqliteService {
         .then((db: SQLiteObject) => {
 
             //Create table Task if it does not already exists in the SQLite database.
-            db.executeSql(`CREATE TABLE IF NOT EXISTS 
-                Task(rowid INTEGER PRIMARY KEY, 
-                     name TEXT, 
-                     desc TEXT, 
+            db.executeSql(`CREATE TABLE IF NOT EXISTS
+                Task(rowid INTEGER PRIMARY KEY,
+                     name TEXT,
+                     desc TEXT,
                      completed INTEGER DEFAULT 0,
                      priority INTEGER,
                      Goal_id INTEGER,

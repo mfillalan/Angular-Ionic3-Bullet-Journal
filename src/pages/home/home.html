@@ -5,7 +5,7 @@
           <ion-icon name="menu"></ion-icon>
         </button>
     </ion-buttons>
-    
+
     <ion-title>
       Bullet Journal
     </ion-title>
@@ -17,7 +17,7 @@
     {{ monthNames[date.getMonth()] }}
   </p>
   <p>
-    {{ date.getDay() + " " + dayNames[date.getDay()] }}
+    {{ date.getDate() + " || " + dayNames[date.getDay()] }}
   </p>
   <ion-list>
     <ion-item>
@@ -27,5 +27,13 @@
       <ion-label fixed>Item 2</ion-label>
     </ion-item>
   </ion-list>
-  <button ion-button>Add Task</button>
+  <button ion-button (click)="addEntry()">Add Task</button>
+  <button ion-button (click)="loadEntry()">Load Entry</button>
+  <button ion-button (click)="deleteEntries()">Delete All Entries</button>
+  <ion-list>
+    <ion-item *ngFor="let entry of entries; let i=index">
+        <h2>Rowid: {{ entry.rowid}}</h2>
+        <p>Date: {{ entry.date }}</p>
+    </ion-item>
+  </ion-list>
 </ion-content>
