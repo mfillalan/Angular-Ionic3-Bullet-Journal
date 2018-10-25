@@ -20,12 +20,24 @@
     {{ date.getDate() + " || " + dayNames[date.getDay()] }}
   </p>
   <ion-list>
-    <ion-item>
-      <ion-label fixed>Item 1</ion-label>
+
+    <span *ngIf="tasks.length > 0">
+        <ion-item *ngFor="let task of tasks; let i=index">
+          <h2>{{ task.name }}</h2>
+          <p>{{ task.desc }}</p>
+        </ion-item>
+    </span>
+
+    <ion-item *ngIf="tasks.length == 0">
+      <h2>No Tasks</h2>
     </ion-item>
+
     <ion-item>
-      <ion-label fixed>Item 2</ion-label>
+      <h2>Does Entry Exist?</h2>
+      <p *ngIf="todayEntryExists" >True</p>
+      <p *ngIf="!todayEntryExists" >False</p>
     </ion-item>
+
   </ion-list>
   <button ion-button (click)="addEntry()">Add Task</button>
   <button ion-button (click)="loadEntry()">Load Entry</button>

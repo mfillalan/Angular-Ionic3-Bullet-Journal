@@ -24,19 +24,34 @@ export class SqliteService {
 
     constructor(private sqlite: SQLite, private toast: Toast) {}
 
-    //#region [rgba(155, 89, 182, 0.15)]
-    //Entry Table Functions
+    /* #region [Helper Functions] */
+
+    /**
+     * @desc Create/Open up the sqlite database to use.
+     * @returns Promise<SQLiteObject>
+     * @example this.connect().then((db: SQLiteObject) => { db.executesql() })
+     */
+    connect(): Promise<SQLiteObject> {
+      return this.sqlite.create({
+        name: this.dbName,
+        location: this.dbLocation
+      });
+    }
+    /* #endregion */
+
+    /* #region [Entry Table Functions] */
 
     /**
      * @description Loads the data in the Entry table in the SQLite database into the entries[] array.
+     * @returns Promise that resolves type Entry[] array.
+     * @resolves Entry[]
      */
     loadAllEntries() {
         console.log("Entering loadEntries() ------------");
-        return this.sqlite.create({
-            name: this.dbName,
-            location: this.dbLocation
-        })
-        .then((db: SQLiteObject) => {
+        return new Promise((resolve, reject) => {
+
+          this.connect()
+          .then((db: SQLiteObject) => {
 
             //Create the Entry table in the SQLite database.
             db.executeSql(`CREATE TABLE IF NOT EXISTS
@@ -53,7 +68,7 @@ export class SqliteService {
 
             //Grab all Entry records in the SQLite table Entry.
             console.log("Executing SQL [SELECT * FROM Entry ORDER BY rowid DESC] :");
-            return db.executeSql('SELECT * FROM Entry ORDER BY rowid DESC', {} as any)
+            db.executeSql('SELECT * FROM Entry ORDER BY rowid DESC', {} as any)
             .then(res => {
               console.log("Results: " + res);
 
@@ -63,67 +78,124 @@ export class SqliteService {
                 this.entries.push({rowid: res.rows.item(i).rowid, date: res.rows.item(i).date});
               }
               console.log("Successfully pushed { " + res.rows.length + " } records into entries[] array.");
+              resolve(this.entries);
             })
             .catch(e => {
               console.log("!! Error: ", "background: #ea5959");
               console.log(e);
             });
 
-        })
+          })
+          .catch(e => {
+            console.log('!! Error: ');
+            console.log(e);
+          });
+
+        });
+
+
     }
 
     addEntry() {
-      this.sqlite.create({
-        name: this.dbName,
-        location: this.dbLocation
-      })
-      .then((db: SQLiteObject) => {
-        db.executeSql("INSERT INTO Entry VALUES(NULL, date('now'))", {} as any)
-        .then(res => {
-          console.log("New Entry added");
-          console.log(res);
 
-          this.toast.show("New Entry added", '5000', 'center').subscribe(
-            toast => {
-              console.log(toast);
-            }
-          );
+      return new Promise((resolve, reject) => {
 
-        })
-      })
-    }
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql("INSERT INTO Entry VALUES(NULL, date('now', 'localtime'))", {} as any)
+          .then(res => {
+            console.log("New Entry added");
+            console.log(res);
 
-    deleteEntry(rowid: number) {
-      return this.sqlite.create({
-        name: this.dbName,
-        location: this.dbLocation
-      })
-      .then((db: SQLiteObject) => {
+            this.toast.show("New Entry added", '2000', 'bottom').subscribe(
+              toast => {
+                //console.log(toast);
+              }
+            );
 
-        console.log("Executing SQL [DELETE FROM Entry WHERE rowid = " + rowid.toString() + "] :");
-        db.executeSql('DELETE FROM Entry WHERE rowid = ?', [rowid])
-        .then(res => {
-          console.log("Results: ");
-          console.log(res);
-          const index = this.entries.findIndex(entry => entry.rowid === rowid);
-          if(index !== -1) {
-            this.entries.splice(index, 1);
-          }
+            resolve("success");
+
+          })
         })
         .catch(e => {
-          console.log("!! Error: ");
           console.log(e);
-        })
+        });
 
-      })
-      .catch(e => {
-        console.log("!! Error running SQL: ");
-        console.log(e);
-      })
+      });
+
     }
-    //#endregion
 
-    //#region [rgba(155, 89, 182, 0.15)]
+    deleteEntry(rowid: number): Promise<{}> {
+
+      return new Promise((resolve, reject) => {
+
+        this.sqlite.create({
+          name: this.dbName,
+          location: this.dbLocation
+        })
+        .then((db: SQLiteObject) => {
+
+          console.log("Executing SQL [DELETE FROM Entry WHERE rowid = " + rowid.toString() + "] :");
+          db.executeSql('DELETE FROM Entry WHERE rowid = ?', [rowid])
+          .then(res => {
+            console.log("Results: ");
+            console.log(res);
+            const index = this.entries.findIndex(entry => entry.rowid === rowid);
+            if(index !== -1) {
+              this.entries.splice(index, 1);
+            }
+            resolve("success"); //success
+          })
+          .catch(e => {
+            console.log("!! Error: ");
+            console.log(e);
+          });
+
+        })
+        .catch(e => {
+          console.log("!! Error running SQL: ");
+          console.log(e);
+        });
+
+      });
+
+
+    }
+
+    /**
+     * @desc Checks to see if an entry already exists for the current day before adding a task.
+     * @param date
+     * @return Promise that resolves a boolean.
+     * @resolve Boolean
+     */
+    checkIfEntryExists(date: string) {
+
+      return new Promise((resolve, reject) => {
+
+        this.connect()
+        .then((db: SQLiteObject) => {
+
+          db.executeSql('SELECT * FROM Entry WHERE date = ?', [date])
+          .then(res => {
+
+            if(res.rows.length > 0) {
+              resolve(true);
+            }
+            else {
+              resolve(false);
+            }
+
+          })
+          .catch(e => {
+            console.log(e);
+          });
+
+        })
+      });
+    }
+    /* #endregion */
+
+    /* #region [Goal Table Functions] */
     /**
      * @description Load the data in the Goal table in the SQLite database into the goals[] array.
      */
@@ -175,9 +247,9 @@ export class SqliteService {
         })
 
     }
-    //#endregion
+    /* #endregion */
 
-    //#region [rgba(155, 89, 182, 0.15)]
+    /* #region [ReusableTask Table Functions] */
     /**
      * @description Load the data in the ReusableTask table in SQLite database into the reusableTasks[] array.
      */
@@ -222,14 +294,14 @@ export class SqliteService {
         })
 
     }
-    //#endregion
+    /* #endregion */
 
-    //#region [rgba(155, 89, 182, 0.15)]
+    /* #region [Task Table Functions] */
     /**
      * @description Load the data in the Task table in SQLite database into the task[] array.
      */
     loadAllTasks() {
-        this.sqlite.create({
+        return this.sqlite.create({
             name: this.dbName,
             location: this.dbLocation
         })
@@ -254,7 +326,7 @@ export class SqliteService {
                 console.log(e);
             });
 
-            db.executeSql('SELECT * FROM Task ORDER BY rowid DESC', {} as any)
+            return db.executeSql('SELECT * FROM Task ORDER BY rowid DESC', {} as any)
             .then(res => {
 
                 this.tasks = []; //clear the array
@@ -275,6 +347,34 @@ export class SqliteService {
             })
         })
     }
-    //#endregion
+
+    addTask(task: Task) {
+
+      return this.sqlite.create({
+        name: this.dbName,
+        location: this.dbLocation
+      })
+      .then((db: SQLiteObject) => {
+        console.log("Executing SQL [INSERT INTO Task VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)] ....");
+
+        return db.executeSql("INSERT INTO Task VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)",
+                      [task.name, task.desc, task.completed, task.priority, task.Goal_id, task.Entry_id, task.parent_Task_id])
+        .then(res => {
+          console.log("SQL Results: ");
+          console.log(res);
+        })
+        .catch(e => {
+          console.log("!! SQL Error: ");
+          console.log(e);
+        });
+
+      })
+      .catch(e => {
+        console.log("!! addTask() sqlite.create error: ");
+        console.log(e);
+      });
+
+    }
+    /* #endregion */
 
 }

@@ -1,3 +1,4 @@
+import { Task } from './../../models/task.model';
 import { SqliteService } from './../../services/sqlite.service';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
@@ -17,10 +18,14 @@ export class HomePage {
   date: Date = new Date();
 
   entries: Entry[] = [];
+  tasks: Task[] = [];
+
+  todayEntryExists: boolean = false;
 
   constructor(public navCtrl: NavController,
               private sqliteService: SqliteService) {
     this.entries = this.sqliteService.entries;
+    this.tasks = this.sqliteService.tasks;
   }
 
   ionViewWillEnter() {
@@ -38,21 +43,47 @@ export class HomePage {
   }
 
   addEntry() {
-    this.sqliteService.addEntry();
+    this.sqliteService.addEntry().then(res => {
+      this.checkIfEntryExists();
+      this.loadEntry();
+    });
+  }
+
+  addTask() {
+
   }
 
   loadEntry() {
     this.sqliteService.loadAllEntries()
-    .then(res => {
-      this.entries = this.sqliteService.entries;
+    .then((res: Entry[]) => {
+      this.entries = res;
     });
   }
 
   deleteEntries() {
     for(var i=0; i < this.entries.length; i++) {
-      this.sqliteService.deleteEntry(this.entries[i].rowid);
+      this.sqliteService.deleteEntry(this.entries[i].rowid).then(res => {
+        this.entries = this.sqliteService.entries;
+        this.checkIfEntryExists();
+      });
     }
-    this.entries = this.sqliteService.entries;
+  }
+
+  checkIfEntryExists() {
+    console.log("Entering CheckIfEntryExists...");
+    var date = new Date();
+    console.log("Date: " + this.dateToFormattedString(date));
+    this.sqliteService.checkIfEntryExists(this.dateToFormattedString(date)).then((res: boolean) => {
+      this.todayEntryExists = res;
+    });
+  }
+
+  dateToFormattedString(date: Date) {
+    var yyyy = date.getFullYear().toString();
+    var mm = (date.getMonth() + 1).toString();
+    var dd = date.getDate().toString();
+
+    return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
   }
 
 }
