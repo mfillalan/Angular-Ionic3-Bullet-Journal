@@ -39,9 +39,9 @@
     </ion-item>
 
   </ion-list>
-  <button ion-button (click)="addEntry()">Add Task</button>
+  <button ion-button (click)="addTask()">Add Task</button>
   <button ion-button (click)="loadEntry()">Load Entry</button>
-  <button ion-button (click)="deleteEntries()">Delete All Entries</button>
+  <button ion-button (click)="deleteTasks()">Delete All Tasks</button>
   <ion-list>
     <ion-item *ngFor="let entry of entries; let i=index">
         <h2>Rowid: {{ entry.rowid}}</h2>

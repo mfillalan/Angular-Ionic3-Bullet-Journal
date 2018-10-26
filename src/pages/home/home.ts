@@ -30,13 +30,14 @@ export class HomePage {
 
   ionViewWillEnter() {
     console.log('[home.ts] Entering ionViewWillEnter() ------------');
-
+    this.date = new Date();
   }
 
   ionViewDidLoad() {
     console.log('[home.ts] Entering ionViewDidLoad() --------------');
+    this.date = new Date();
 
-    this.sqliteService.loadAllTasks();
+    //this.sqliteService.loadAllTasks();
     this.sqliteService.loadAllEntries();
     this.sqliteService.loadAllGoals();
     this.sqliteService.loadAllReusableTasks();
@@ -44,13 +45,36 @@ export class HomePage {
 
   addEntry() {
     this.sqliteService.addEntry().then(res => {
-      this.checkIfEntryExists();
+      this.checkIfEntryExists(this.date);
       this.loadEntry();
     });
   }
 
   addTask() {
-
+    this.checkIfEntryExists(this.date).then((res: boolean) => {
+      if(!res) {
+        //TODO:
+        //add entry for today
+        this.sqliteService.addEntry().then((res: number) => {
+          this.sqliteService.addTask(new Task(null, "test", "testing", 0, 0, null, res, null));
+        })
+        .catch(e => {
+          console.log("!! error: " );
+          console.log(e);
+        })
+        //add the task with the entry id
+      }
+      else {
+        //TODO:
+        //add the task with current entry id
+        this.sqliteService.getEntryRowId(this.date).then((rowid: number) => {
+          this.sqliteService.addTask(new Task(null, "test", "testing", 0, 0, null, rowid, null))
+          .then(res => {
+            this.tasks = this.sqliteService.tasks;
+          });
+        })
+      }
+    })
   }
 
   loadEntry() {
@@ -64,20 +88,35 @@ export class HomePage {
     for(var i=0; i < this.entries.length; i++) {
       this.sqliteService.deleteEntry(this.entries[i].rowid).then(res => {
         this.entries = this.sqliteService.entries;
-        this.checkIfEntryExists();
+        this.checkIfEntryExists(this.date);
       });
     }
   }
 
-  checkIfEntryExists() {
-    console.log("Entering CheckIfEntryExists...");
-    var date = new Date();
-    console.log("Date: " + this.dateToFormattedString(date));
-    this.sqliteService.checkIfEntryExists(this.dateToFormattedString(date)).then((res: boolean) => {
-      this.todayEntryExists = res;
-    });
+  deleteTasks() {
+    //TODO:
+    //Create deleteTask() function in sqliteService.
   }
 
+  /**
+   * @desc
+   * @param date
+   * @returns Promise that resolves type boolean
+   * @resolves boolean
+   */
+  checkIfEntryExists(date: Date): Promise<{}> {
+    console.log("Entering CheckIfEntryExists...");
+
+    return new Promise((resolve, reject) => {
+      this.sqliteService.checkIfEntryExists(date).then((res: boolean) => {
+        this.todayEntryExists = res;
+        resolve(res);
+      });
+    });
+
+  }
+
+  /*
   dateToFormattedString(date: Date) {
     var yyyy = date.getFullYear().toString();
     var mm = (date.getMonth() + 1).toString();
@@ -85,5 +124,6 @@ export class HomePage {
 
     return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
   }
+  */
 
 }
