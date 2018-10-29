@@ -38,7 +38,12 @@ export class SqliteService {
       });
     }
 
-    dateToFormattedString(date: Date) {
+    /**
+     * @desc Takes a date and formats it into sqlite date.
+     * @param date
+     * @returns string, formatted date yyyy-mm-dd
+     */
+    dateToFormattedString(date: Date): string {
       var yyyy = date.getFullYear().toString();
       var mm = (date.getMonth() + 1).toString();
       var dd = date.getDate().toString();
@@ -54,7 +59,7 @@ export class SqliteService {
      * @returns Promise that resolves type Entry[ ] array.
      * @resolves Entry[ ]
      */
-    loadAllEntries(): Promise<{}> {
+    loadAllEntries(): Promise<Entry[]> {
         console.log("Entering loadEntries() ------------");
         return new Promise((resolve, reject) => {
 
@@ -91,12 +96,14 @@ export class SqliteService {
             .catch(e => {
               console.log("!! Error: ", "background: #ea5959");
               console.log(e);
+              reject("!! loadAllEntries() executeSql Failed.");
             });
 
           })
           .catch(e => {
             console.log('!! Error: ');
             console.log(e);
+            reject("!! loadAllEntries() Failed.");
           });
 
         });
@@ -104,7 +111,12 @@ export class SqliteService {
 
     }
 
-    addEntry(): Promise<{}> {
+    /**
+     * @desc Adds an new record in the Entry table.
+     * @returns Promise<number> as rowid
+     * @resolves rowid: number
+     */
+    addEntry(): Promise<number> {
 
       return new Promise((resolve, reject) => {
 
@@ -124,16 +136,29 @@ export class SqliteService {
             resolve(Number(res.insertId));
 
           })
+          .catch(e => {
+            console.log("!! Error: ");
+            console.log(e);
+            reject("addEntry() exectueSql failed.");
+          });
         })
         .catch(e => {
+          console.log("!! Error: ");
           console.log(e);
+          reject("addEntry() failed.");
         });
 
       });
 
     }
 
-    deleteEntry(rowid: number): Promise<{}> {
+    /**
+     * @desc
+     * @param rowid
+     * @returns Promise<Entry[ ]> updated entry array after removing the deleted row.
+     * @resolves Entry[ ]
+     */
+    deleteEntry(rowid: number): Promise<Entry[]> {
 
       return new Promise((resolve, reject) => {
 
@@ -149,17 +174,19 @@ export class SqliteService {
             if(index !== -1) {
               this.entries.splice(index, 1);
             }
-            resolve("success"); //success
+            resolve(this.entries); //success
           })
           .catch(e => {
             console.log("!! Error: ");
             console.log(e);
+            reject("!! deleteEntry() executeSql failed.");
           });
 
         })
         .catch(e => {
           console.log("!! Error running SQL: ");
           console.log(e);
+          reject("!! deleteEntry() failed.");
         });
 
       });
@@ -173,7 +200,7 @@ export class SqliteService {
      * @return Promise that resolves a boolean.
      * @resolve Boolean
      */
-    checkIfEntryExists(date: Date): Promise<{}> {
+    checkIfEntryExists(date: Date): Promise<boolean> {
 
       return new Promise((resolve, reject) => {
 
@@ -226,33 +253,59 @@ export class SqliteService {
     /* #endregion */
 
     /* #region [Goal Table Functions] */
+
+    /**
+     * @desc Create the Goal table in the sqlite database.
+     * @returns Promise<boolean>
+     * @resolves boolean
+     */
+    createGoalTable(): Promise<boolean> {
+
+      return new Promise((resolve, reject) => {
+
+        this.connect()
+        .then((db: SQLiteObject) => {
+
+          //Create the Goal table if it doesn't already exists
+          db.executeSql(`CREATE TABLE IF NOT EXISTS
+              Goal(rowid INTEGER PRIMARY KEY,
+                  name TEXT,
+                  desc TEXT,
+                  amt_completed INTEGER DEFAULT 0)`, {} as any)
+          .then(res => {
+              console.log("Sqlite CREATE TABLE [Goal] results: ");
+              console.log(res);
+              resolve(true);
+          })
+          .catch(e => {
+              console.log("!! Sqlite CREATE TABLE [Goal] error: ", "background: #ea5959");
+              console.log(e);
+              reject("createGoalTable(): CREATE statement failed.");
+          });
+
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+          reject("createGoalTable(): Failed to run.");
+        });
+
+      });
+
+    }
+
     /**
      * @description Load the data in the Goal table in the SQLite database into the goals[ ] array.
      * @returns Promise that resolves type Goal[ ].
      * @resolves Goal[ ]
      */
-    loadAllGoals(): Promise<{}> {
+    loadAllGoals(): Promise<Goal[]> {
         console.log("Entering loadGoals() ------------");
 
         return new Promise((resolve, reject) => {
 
           this.connect()
           .then((db: SQLiteObject) => {
-
-              //Create the Goal table if it doesn't already exists
-              db.executeSql(`CREATE TABLE IF NOT EXISTS
-                  Goal(rowid INTEGER PRIMARY KEY,
-                      name TEXT,
-                      desc TEXT,
-                      amt_completed INTEGER DEFAULT 0)`, {} as any)
-              .then(res => {
-                  console.log("Sqlite CREATE TABLE [Goal] results: ");
-                  console.log(res);
-              })
-              .catch(e => {
-                  console.log("!! Sqlite CREATE TABLE [Goal] error: ", "background: #ea5959");
-                  console.log(e);
-              });
 
               //Grab all the goals in the sqlite db and store into an array
               console.log("Executing SQL [SELECT * FROM Goal ORDER BY rowid ASC] :");
@@ -276,6 +329,7 @@ export class SqliteService {
               .catch(e => {
                   console.log("!! Error: ", "background: #ea5959");
                   console.log(e);
+                  reject("loadAllGoals(): SELECT Statement failed.");
               });
 
 
@@ -283,6 +337,7 @@ export class SqliteService {
           .catch(e => {
             console.log("!! Error: ");
             console.log(e);
+            reject("loadAllGoals(): Failed to run.");
           });
 
         });
@@ -290,9 +345,51 @@ export class SqliteService {
 
 
     }
+
     /* #endregion */
 
     /* #region [ReusableTask Table Functions] */
+
+    /**
+     * @desc Creates the reusableTask table in the sqlite database.
+     * @returns Promise<boolean>
+     * @resolves boolean
+     */
+    createReusableTaskTable(): Promise<boolean> {
+
+      return new Promise((resolve, reject) => {
+
+        this.connect()
+        .then((db: SQLiteObject) => {
+
+          //Create the ReusableTask table if it doesn't already exist.
+          db.executeSql(`CREATE TABLE IF NOT EXISTS
+              ReusableTask(rowid INTEGER PRIMARY KEY,
+                          name TEXT,
+                          desc TEXT,
+                          Goal_id NUMBER)`, {} as any)
+          .then(res => {
+              console.log("Sqlite CREATE TABLE [ReusableTask] results: ");
+              console.log(res);
+              resolve(true);
+          })
+          .catch(e => {
+              console.log("!! Sqlite CREATE TABLE [ReusableTask] error: ", "background: #ea5959");
+              console.log(e);
+              reject("createReusableTable(): CREATE statement failed.");
+          });
+
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+          reject("createReusableTable(): Failed to run.");
+        });
+
+      });
+
+    }
+
     /**
      * @description Load the data in the ReusableTask table in SQLite database into the reusableTasks[ ] array.
      * @returns Promise that resolves ReusableTask[ ].
@@ -304,21 +401,6 @@ export class SqliteService {
 
         this.connect()
         .then((db: SQLiteObject) => {
-
-            //Create the ReusableTask table if it doesn't already exist.
-            db.executeSql(`CREATE TABLE IF NOT EXISTS
-                ReusableTask(rowid INTEGER PRIMARY KEY,
-                             name TEXT,
-                             desc TEXT,
-                             Goal_id NUMBER)`, {} as any)
-            .then(res => {
-                console.log("Sqlite CREATE TABLE [ReusableTask] results: ");
-                console.log(res);
-            })
-            .catch(e => {
-                console.log("!! Sqlite CREATE TABLE [ReusableTask] error: ", "background: #ea5959");
-                console.log(e);
-            });
 
             //Grab all the records from the ReusableTask table
             db.executeSql('SELECT * FROM ReusableTask ORDER BY name DESC', {} as any)
@@ -354,68 +436,102 @@ export class SqliteService {
     /* #endregion */
 
     /* #region [Task Table Functions] */
+
     /**
-     * @description Load the data in the Task table in SQLite database into the task[] array.
-     * @returns Promise that resolves Task[ ].
-     * @resolves Task[ ]
+     * @desc Create the Task table in the sqlite database.
+     * @returns Promise<boolean>
+     * @resolves boolean
      */
-    loadAllTasks(): Promise<{}> {
+    createTaskTable(): Promise<boolean> {
 
-        return new Promise((resolve, reject) => {
-          this.connect()
-          .then((db: SQLiteObject) => {
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
 
-              //Create table Task if it does not already exists in the SQLite database.
-              db.executeSql(`CREATE TABLE IF NOT EXISTS
-                  Task(rowid INTEGER PRIMARY KEY,
-                      name TEXT,
-                      desc TEXT,
-                      completed INTEGER DEFAULT 0,
-                      priority INTEGER,
-                      Goal_id INTEGER,
-                      Entry_id NOT NULL,
-                      parent_Task_id INTEGER)`, {} as any)
-              .then(res => {
-                  console.log("Sqlite CREATE TABLE [Task] results: ");
-                  console.log(res);
-              })
-              .catch(e => {
-                  console.log("!! Sqlite CREATE TABLE [Task] error: ", "background: #ea5959");
-                  console.log(e);
-              });
-
-              db.executeSql('SELECT * FROM Task ORDER BY rowid DESC', {} as any)
-              .then(res => {
-
-                  this.tasks = []; //clear the array
-
-                  //loop through the SQL results and push to the tasks[] array.
-                  for(var i=0; i < res.rows.length; i++) {
-                      this.tasks.push({rowid: res.rows.item(i).rowid,
-                                      name: res.rows.item(i).name,
-                                      desc: res.rows.item(i).desc,
-                                      completed: res.rows.item(i).completed,
-                                      priority: res.rows.item(i).priority,
-                                      Goal_id: res.rows.item(i).Goal_id,
-                                      Entry_id: res.rows.item(i).Entry_id,
-                                      parent_Task_id: res.rows.item(i).parent_Task_id});
-                  }
-
-                  console.log("Successfully pushed { " + res.rows.length + " } records into tasks[] array.");
-
-                  resolve(this.tasks);
-              })
+          //Create table Task if it does not already exists in the SQLite database.
+          db.executeSql(`CREATE TABLE IF NOT EXISTS
+              Task(rowid INTEGER PRIMARY KEY,
+                  name TEXT,
+                  desc TEXT,
+                  completed INTEGER DEFAULT 0,
+                  priority INTEGER,
+                  Goal_id INTEGER,
+                  Entry_id NOT NULL,
+                  parent_Task_id INTEGER)`, {} as any)
+          .then(res => {
+              console.log("Sqlite CREATE TABLE [Task] results: ");
+              console.log(res);
+              resolve(true);
           })
           .catch(e => {
-            console.log("!! Error: ");
-            console.log(e);
-          })
-        });
+              console.log("!! Sqlite CREATE TABLE [Task] error: ", "background: #ea5959");
+              console.log(e);
+              reject("createTaskTable() CREATE statement failed.");
+          });
 
+        })
+        .catch(e => {
+          console.log("!! error: ");
+          console.log(e);
+          reject("createTaskTable() failed.");
+        });
+      });
 
     }
 
-    addTask(task: Task): Promise<{}> {
+    /**
+     * @description Load the data in the Task table in SQLite database into the task[] array.
+     * @returns Promise<Task[ ]>
+     * @resolves Task[ ]
+     */
+    loadAllTasks(): Promise<Task[]> {
+
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
+
+            db.executeSql('SELECT * FROM Task ORDER BY rowid DESC', {} as any)
+            .then(res => {
+
+                this.tasks = []; //clear the array
+
+                //loop through the SQL results and push to the tasks[] array.
+                for(var i=0; i < res.rows.length; i++) {
+                    this.tasks.push({rowid: res.rows.item(i).rowid,
+                                    name: res.rows.item(i).name,
+                                    desc: res.rows.item(i).desc,
+                                    completed: res.rows.item(i).completed,
+                                    priority: res.rows.item(i).priority,
+                                    Goal_id: res.rows.item(i).Goal_id,
+                                    Entry_id: res.rows.item(i).Entry_id,
+                                    parent_Task_id: res.rows.item(i).parent_Task_id});
+                }
+
+                console.log("Successfully pushed { " + res.rows.length + " } records into tasks[] array.");
+
+                resolve(this.tasks);
+            })
+            .catch(e => {
+              console.log("!! Error: ");
+              console.log(e);
+              reject("loadAllTasks() SELECT statement failed.");
+            });
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+        })
+      });
+
+    }
+
+    /**
+     * @desc Add a new record to the Task table.
+     * @param task
+     * @returns Promise<number>
+     * @resolves rowid: number
+     */
+    addTask(task: Task): Promise<number> {
 
       return new Promise((resolve, reject) => {
         this.connect()
@@ -430,7 +546,6 @@ export class SqliteService {
 
 
             if(res.rowsAffected > 0) {
-              //console.log(res.rows.item(0).rowid);
               console.log(res.insertId);
 
               this.getTaskByRowId(res.insertId).then((task: Task) => {
@@ -438,31 +553,24 @@ export class SqliteService {
 
                 console.log("Task successfully added and pushed to tasks[] array.");
 
-                resolve(res.insertId);
+                resolve(Number(res.insertId));
               })
               .catch(e => {
                 console.log("!! Error: ");
                 console.log(e);
+                reject("addTask(): Problem adding task to task array.")
               });
 
-              /*
-              this.tasks.push({rowid: res.insertId,
-                               name: res.rows.item(0).name,
-                               desc: res.rows.item(0).desc,
-                               completed: res.rows.item(0).completed,
-                               priority: res.rows.item(0).priority,
-                               Goal_id: res.rows.item(0).Goal_id,
-                               Entry_id: res.rows.item(0).Entry_id,
-                               parent_Task_id: res.rows.item(0).parent_task_id });
-              */
-
-              
+            }
+            else {
+              reject("addTask(): INSERT statement did not insert any records.");
             }
 
           })
           .catch(e => {
             console.log("!! SQL Error: ");
             console.log(e);
+            reject("addTask(): INSERT statement errored out.");
           });
 
         })
@@ -474,47 +582,64 @@ export class SqliteService {
 
     }
 
-    deleteTask(rowid: number): Promise<{}> {
+    /**
+     * @desc Deletes a record with the provided rowid.
+     * @param rowid
+     */
+    deleteTask(rowid: number): Promise<string> {
 
       return new Promise((resolve, reject) => {
+
         this.connect()
         .then((db: SQLiteObject) => {
 
           db.executeSql('DELETE FROM Task WHERE rowid = ?', [rowid])
           .then(res => {
-            console.log("Deleted Task rowid: " + res.inserId);
+            console.log("Deleted Task rowid: " + res.insertId);
             console.log("Number of rows affected: " + res.rowsAffected);
 
             const index = this.tasks.findIndex(task => task.rowid === rowid);
             if(index !== -1) {
               this.tasks.splice(index, 1);
             }
-            resolve("success");
+            resolve("Successfully deleted Task with rowid: " + String(rowid));
           })
           .catch(e => {
             console.log("!! Error: ");
             console.log(e);
+            reject("deleteTask(): DELETE Statement failed.");
           });
 
         })
         .catch(e => {
           console.log("!! error: ");
           console.log(e);
-        })
+          reject("deleteTask(): failed to complete.");
+        });
+
       });
 
     }
 
+
+    /**
+     * @desc Get a single task record with the provided rowid.
+     * @param rowid
+     * @returns Promise<Task>
+     * @resolves Task
+     */
     getTaskByRowId(rowid: number): Promise<Task> {
+
       return new Promise((resolve, reject) => {
+
         this.connect()
         .then((db: SQLiteObject) => {
           db.executeSql('SELECT * FROM Task WHERE rowid = ?', [rowid])
           .then(res => {
             if(res.rows.length > 0) {
-              resolve(new Task(res.rows.item(0).rowid, 
-                               res.rows.item(0).name, 
-                               res.rows.item(0).desc, 
+              resolve(new Task(res.rows.item(0).rowid,
+                               res.rows.item(0).name,
+                               res.rows.item(0).desc,
                                res.rows.item(0).completed,
                                res.rows.item(0).priority,
                                res.rows.item(0).parent_Task_id,
@@ -525,15 +650,25 @@ export class SqliteService {
           .catch(e => {
             console.log("!! Error: ");
             console.log(e);
+            reject("getTaskByRowId(): SELECT statement failed.");
           });
+
         })
         .catch(e => {
           console.log("!! Error: ");
           console.log(e);
+          reject("getTaskByRowId(): Failed to run.");
         });
+
       });
     }
 
+    /**
+     * @desc Gets all the tasks that are associated with the current Entry ID.
+     * @param entryId
+     * @returns Promise<Task[ ]>
+     * @resolves Task[ ]
+     */
     getTasksByEntryId(entryId: number): Promise<Task[]> {
       return new Promise((resolve, reject) => {
         this.connect()
@@ -542,12 +677,12 @@ export class SqliteService {
             if(res.rows.length > 0) {
 
               var tasks : Task[] = [];
-              
+
               for(var i = 0; i < res.rows.length; i++) {
-                tasks.push({ 
+                tasks.push({
                   rowid: res.rows.item(i).rowid,
-                  name: res.rows.item(0).name, 
-                  desc: res.rows.item(0).desc, 
+                  name: res.rows.item(0).name,
+                  desc: res.rows.item(0).desc,
                   completed: res.rows.item(0).completed,
                   priority: res.rows.item(0).priority,
                   parent_Task_id: res.rows.item(0).parent_Task_id,
@@ -558,7 +693,7 @@ export class SqliteService {
 
               console.log("Successfully added ( " + res.rows.length + ") tasks to array.");
               resolve(tasks);
-              
+
             }
           })
         })
