@@ -433,6 +433,19 @@ export class SqliteService {
               //console.log(res.rows.item(0).rowid);
               console.log(res.insertId);
 
+              this.getTaskByRowId(res.insertId).then((task: Task) => {
+                this.tasks.push(task);
+
+                console.log("Task successfully added and pushed to tasks[] array.");
+
+                resolve(res.insertId);
+              })
+              .catch(e => {
+                console.log("!! Error: ");
+                console.log(e);
+              });
+
+              /*
               this.tasks.push({rowid: res.insertId,
                                name: res.rows.item(0).name,
                                desc: res.rows.item(0).desc,
@@ -441,10 +454,9 @@ export class SqliteService {
                                Goal_id: res.rows.item(0).Goal_id,
                                Entry_id: res.rows.item(0).Entry_id,
                                parent_Task_id: res.rows.item(0).parent_task_id });
+              */
 
-              console.log("Task successfully added and pushed to tasks[] array.");
-
-              resolve(res.insertId);
+              
             }
 
           })
@@ -472,7 +484,16 @@ export class SqliteService {
           .then(res => {
             console.log("Deleted Task rowid: " + res.inserId);
             console.log("Number of rows affected: " + res.rowsAffected);
+
+            const index = this.tasks.findIndex(task => task.rowid === rowid);
+            if(index !== -1) {
+              this.tasks.splice(index, 1);
+            }
             resolve("success");
+          })
+          .catch(e => {
+            console.log("!! Error: ");
+            console.log(e);
           });
 
         })
@@ -482,6 +503,70 @@ export class SqliteService {
         })
       });
 
+    }
+
+    getTaskByRowId(rowid: number): Promise<Task> {
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql('SELECT * FROM Task WHERE rowid = ?', [rowid])
+          .then(res => {
+            if(res.rows.length > 0) {
+              resolve(new Task(res.rows.item(0).rowid, 
+                               res.rows.item(0).name, 
+                               res.rows.item(0).desc, 
+                               res.rows.item(0).completed,
+                               res.rows.item(0).priority,
+                               res.rows.item(0).parent_Task_id,
+                               res.rows.item(0).Entry_id,
+                               res.rows.item(0).Goal_id));
+            }
+          })
+          .catch(e => {
+            console.log("!! Error: ");
+            console.log(e);
+          });
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+        });
+      });
+    }
+
+    getTasksByEntryId(entryId: number): Promise<Task[]> {
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql('SELECT * FROM Task WHERE Entry_id = ?', [entryId]).then(res => {
+            if(res.rows.length > 0) {
+
+              var tasks : Task[] = [];
+              
+              for(var i = 0; i < res.rows.length; i++) {
+                tasks.push({ 
+                  rowid: res.rows.item(i).rowid,
+                  name: res.rows.item(0).name, 
+                  desc: res.rows.item(0).desc, 
+                  completed: res.rows.item(0).completed,
+                  priority: res.rows.item(0).priority,
+                  parent_Task_id: res.rows.item(0).parent_Task_id,
+                  Entry_id: res.rows.item(0).Entry_id,
+                  Goal_id: res.rows.item(0).Goal_id
+                });
+              }
+
+              console.log("Successfully added ( " + res.rows.length + ") tasks to array.");
+              resolve(tasks);
+              
+            }
+          })
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+        })
+      });
     }
     /* #endregion */
 

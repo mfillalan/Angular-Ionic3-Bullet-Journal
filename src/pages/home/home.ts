@@ -28,19 +28,21 @@ export class HomePage {
     this.tasks = this.sqliteService.tasks;
   }
 
-  ionViewWillEnter() {
-    console.log('[home.ts] Entering ionViewWillEnter() ------------');
-    this.date = new Date();
-  }
 
   ionViewDidLoad() {
     console.log('[home.ts] Entering ionViewDidLoad() --------------');
     this.date = new Date();
 
-    //this.sqliteService.loadAllTasks();
+    
     this.sqliteService.loadAllEntries();
     this.sqliteService.loadAllGoals();
     this.sqliteService.loadAllReusableTasks();
+    this.sqliteService.loadAllTasks();
+  }
+
+  ionViewWillEnter() {
+    console.log('[home.ts] Entering ionViewWillEnter() ------------');
+    this.date = new Date();
   }
 
   addEntry() {
@@ -56,7 +58,11 @@ export class HomePage {
         //TODO:
         //add entry for today
         this.sqliteService.addEntry().then((res: number) => {
-          this.sqliteService.addTask(new Task(null, "test", "testing", 0, 0, null, res, null));
+          this.sqliteService.addTask(new Task(null, "test", "testing", 0, 0, null, res, null))
+          .then(res => {
+            console.log("New task added with rowid: " + res);
+            this.tasks = this.sqliteService.tasks;
+          });
         })
         .catch(e => {
           console.log("!! error: " );
@@ -96,6 +102,11 @@ export class HomePage {
   deleteTasks() {
     //TODO:
     //Create deleteTask() function in sqliteService.
+    for(var i=0; i < this.tasks.length; i++) {
+      this.sqliteService.deleteTask(this.tasks[i].rowid).then(res => {
+        this.tasks = this.sqliteService.tasks;
+      });
+    }
   }
 
   /**

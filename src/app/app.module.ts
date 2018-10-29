@@ -36,3 +36,5 @@ import { HomePage } from '../pages/home/home';
   ]
 })
 export class AppModule {}
+
+
