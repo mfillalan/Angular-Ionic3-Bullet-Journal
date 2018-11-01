@@ -1,0 +1,43 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{ mode }} Task</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <form #f="ngForm" (ngSubmit)="onAddItem(f)">
+    <ion-list>
+      <ion-item>
+        <ion-label fixed>Name</ion-label>
+        <ion-input ngModel
+            type="text"
+            name="taskName"
+            placeholder="Workout, study, etc.."
+            required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>Description</ion-label>
+        <ion-textarea ngModel
+            name="taskDesc"
+            placeholder="Enter a description"
+            required>
+        </ion-textarea>
+      </ion-item>
+
+    </ion-list>
+
+    <button ion-button
+        type="submit"
+        [disabled]="!f.valid"
+        block>
+      Submit
+    </button>
+  </form>
+
+</ion-content>

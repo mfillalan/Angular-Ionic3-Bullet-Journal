@@ -26,6 +26,13 @@ export class SqliteService {
 
     /* #region [Helper Functions] */
 
+    createAllTables() {
+      this.createEntryTable();
+      this.createGoalTable();
+      this.createReusableTaskTable();
+      this.createTaskTable();
+    }
+
     /**
      * @desc Create/Open up the sqlite database to use.
      * @returns Promise<SQLiteObject>
@@ -55,6 +62,44 @@ export class SqliteService {
     /* #region [Entry Table Functions] */
 
     /**
+     * @desc Creates the Entry table in the sqlite database.
+     * @returns Promise<boolean>
+     * @resolves boolean
+     */
+    createEntryTable(): Promise<boolean> {
+
+      return new Promise((resolve, reject) => {
+
+        this.connect()
+        .then((db: SQLiteObject) => {
+
+          //Create the Entry table in the SQLite database.
+          db.executeSql(`CREATE TABLE IF NOT EXISTS
+          Entry(rowid INTEGER PRIMARY KEY,
+                date TEXT NOT NULL)`, {} as any)
+          .then(res => {
+              console.log("SQLite CREATE Results: ");
+              console.log(res);
+              resolve(true);
+          })
+          .catch(e => {
+              console.log("SQLite CREATE Error: ", "background: #ea5959");
+              console.log(e);
+              reject("createEntryTable(): CREATE statement failed.");
+          });
+
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+          reject("createEntryTable(): Failed to run.");
+        });
+
+      });
+
+    }
+
+    /**
      * @description Loads the data in the Entry table in the SQLite database into the entries[ ] array.
      * @returns Promise that resolves type Entry[ ] array.
      * @resolves Entry[ ]
@@ -66,18 +111,7 @@ export class SqliteService {
           this.connect()
           .then((db: SQLiteObject) => {
 
-            //Create the Entry table in the SQLite database.
-            db.executeSql(`CREATE TABLE IF NOT EXISTS
-                Entry(rowid INTEGER PRIMARY KEY,
-                      date TEXT NOT NULL)`, {} as any)
-            .then(res => {
-                console.log("SQLite CREATE Results: ");
-                console.log(res);
-            })
-            .catch(e => {
-                console.log("SQLite CREATE Error: ", "background: #ea5959");
-                console.log(e);
-            });
+
 
             //Grab all Entry records in the SQLite table Entry.
             console.log("Executing SQL [SELECT * FROM Entry ORDER BY rowid DESC] :");
@@ -116,13 +150,13 @@ export class SqliteService {
      * @returns Promise<number> as rowid
      * @resolves rowid: number
      */
-    addEntry(): Promise<number> {
+    addEntry(date: Date): Promise<number> {
 
       return new Promise((resolve, reject) => {
 
         this.connect()
         .then((db: SQLiteObject) => {
-          db.executeSql("INSERT INTO Entry VALUES(NULL, date('now', 'localtime'))", {} as any)
+          db.executeSql("INSERT INTO Entry VALUES(NULL, ?)", [this.dateToFormattedString(date)])
           .then(res => {
             console.log("New Entry added. InsertId: " + String(res.insertId));
             console.log(res);
@@ -232,7 +266,7 @@ export class SqliteService {
      * @returns Promise that resolves the rowid.
      * @resolves rowid: number, -1 is resolved if there are no results.
      */
-    getEntryRowId(date: Date): Promise<{}> {
+    getEntryRowId(date: Date): Promise<number> {
 
       return new Promise((resolve, reject) => {
         this.connect()
@@ -484,7 +518,7 @@ export class SqliteService {
      * @returns Promise<Task[ ]>
      * @resolves Task[ ]
      */
-    loadAllTasks(): Promise<Task[]> {
+    getAllTasks(): Promise<Task[]> {
 
       return new Promise((resolve, reject) => {
         this.connect()
@@ -493,11 +527,11 @@ export class SqliteService {
             db.executeSql('SELECT * FROM Task ORDER BY rowid DESC', {} as any)
             .then(res => {
 
-                this.tasks = []; //clear the array
+                var tasks: Task[] = [];
 
                 //loop through the SQL results and push to the tasks[] array.
                 for(var i=0; i < res.rows.length; i++) {
-                    this.tasks.push({rowid: res.rows.item(i).rowid,
+                        tasks.push({rowid: res.rows.item(i).rowid,
                                     name: res.rows.item(i).name,
                                     desc: res.rows.item(i).desc,
                                     completed: res.rows.item(i).completed,
@@ -509,7 +543,8 @@ export class SqliteService {
 
                 console.log("Successfully pushed { " + res.rows.length + " } records into tasks[] array.");
 
-                resolve(this.tasks);
+                this.tasks = tasks;
+                resolve(tasks);
             })
             .catch(e => {
               console.log("!! Error: ");
@@ -528,10 +563,10 @@ export class SqliteService {
     /**
      * @desc Add a new record to the Task table.
      * @param task
-     * @returns Promise<number>
-     * @resolves rowid: number
+     * @returns Promise<Task>
+     * @resolves task: Task
      */
-    addTask(task: Task): Promise<number> {
+    addTask(task: Task): Promise<Task> {
 
       return new Promise((resolve, reject) => {
         this.connect()
@@ -549,11 +584,9 @@ export class SqliteService {
               console.log(res.insertId);
 
               this.getTaskByRowId(res.insertId).then((task: Task) => {
-                this.tasks.push(task);
+                //console.log("Task successfully added and pushed to tasks[] array.");
 
-                console.log("Task successfully added and pushed to tasks[] array.");
-
-                resolve(Number(res.insertId));
+                resolve(task);
               })
               .catch(e => {
                 console.log("!! Error: ");
@@ -585,8 +618,10 @@ export class SqliteService {
     /**
      * @desc Deletes a record with the provided rowid.
      * @param rowid
+     * @returns Promise<number>
+     * @resolves rowid: number
      */
-    deleteTask(rowid: number): Promise<string> {
+    deleteTask(rowid: number): Promise<number> {
 
       return new Promise((resolve, reject) => {
 
@@ -598,11 +633,7 @@ export class SqliteService {
             console.log("Deleted Task rowid: " + res.insertId);
             console.log("Number of rows affected: " + res.rowsAffected);
 
-            const index = this.tasks.findIndex(task => task.rowid === rowid);
-            if(index !== -1) {
-              this.tasks.splice(index, 1);
-            }
-            resolve("Successfully deleted Task with rowid: " + String(rowid));
+            resolve(res.insertId);
           })
           .catch(e => {
             console.log("!! Error: ");
@@ -637,14 +668,16 @@ export class SqliteService {
           db.executeSql('SELECT * FROM Task WHERE rowid = ?', [rowid])
           .then(res => {
             if(res.rows.length > 0) {
-              resolve(new Task(res.rows.item(0).rowid,
-                               res.rows.item(0).name,
-                               res.rows.item(0).desc,
-                               res.rows.item(0).completed,
-                               res.rows.item(0).priority,
-                               res.rows.item(0).parent_Task_id,
-                               res.rows.item(0).Entry_id,
-                               res.rows.item(0).Goal_id));
+              var task: Task = new Task(res.rows.item(0).rowid,
+              res.rows.item(0).name,
+              res.rows.item(0).desc,
+              res.rows.item(0).completed,
+              res.rows.item(0).priority,
+              res.rows.item(0).parent_Task_id,
+              res.rows.item(0).Entry_id,
+              res.rows.item(0).Goal_id);
+
+              resolve(task);
             }
           })
           .catch(e => {
@@ -691,6 +724,7 @@ export class SqliteService {
                 });
               }
 
+              this.tasks = tasks;
               console.log("Successfully added ( " + res.rows.length + ") tasks to array.");
               resolve(tasks);
 
@@ -702,6 +736,31 @@ export class SqliteService {
           console.log(e);
         })
       });
+
+    }
+
+    getTasksByDate(date: Date): Promise<Task[]> {
+
+      return new Promise((resolve, reject) => {
+
+        this.getEntryRowId(date).then((entryId: number) => {
+
+          this.getTasksByEntryId(entryId).then((tasks: Task[]) => {
+            resolve(tasks);
+          })
+          .catch(e => {
+            console.log(e);
+            reject(e);
+          });
+
+        })
+        .catch(e => {
+          console.log(e);
+          reject(e);
+        });
+
+      });
+
     }
     /* #endregion */
 

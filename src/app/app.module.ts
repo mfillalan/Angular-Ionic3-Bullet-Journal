@@ -10,11 +10,13 @@ import { Toast } from '@ionic-native/toast';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { EditTaskPage } from '../pages/edit-task/edit-task';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    EditTaskPage
   ],
   imports: [
     BrowserModule,
@@ -24,7 +26,8 @@ import { HomePage } from '../pages/home/home';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    EditTaskPage
   ],
   providers: [
     StatusBar,
