@@ -2,6 +2,7 @@ import { SqliteService } from './../../services/sqlite.service';
 import { EditTaskPage } from './../edit-task/edit-task';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { Task } from '../../models/task.model';
 
 @Component({
   selector: 'page-home',
@@ -15,8 +16,6 @@ export class HomePage {
   dayNames: string[] = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
   date: Date = new Date();
-
-  todayEntryExists: boolean = false;
 
   constructor(public navCtrl: NavController,
               public sqliteService: SqliteService) {
@@ -35,23 +34,12 @@ export class HomePage {
     this.date = new Date();
   }
 
-  onGoToEditTask() {
-    this.navCtrl.push(EditTaskPage);
+  createNewTask() {
+    this.navCtrl.push(EditTaskPage, {mode: "New"});
   }
 
-  addEntry() {
-  }
-
-  addTask() {
-  }
-
-  loadEntry() {
-  }
-
-  deleteEntries() {
-  }
-
-  deleteTasks() {
+  editTask(task: Task) {
+    this.navCtrl.push(EditTaskPage, {mode: "Edit", task: task});
   }
 
 }

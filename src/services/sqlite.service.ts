@@ -714,13 +714,13 @@ export class SqliteService {
               for(var i = 0; i < res.rows.length; i++) {
                 tasks.push({
                   rowid: res.rows.item(i).rowid,
-                  name: res.rows.item(0).name,
-                  desc: res.rows.item(0).desc,
-                  completed: res.rows.item(0).completed,
-                  priority: res.rows.item(0).priority,
-                  parent_Task_id: res.rows.item(0).parent_Task_id,
-                  Entry_id: res.rows.item(0).Entry_id,
-                  Goal_id: res.rows.item(0).Goal_id
+                  name: res.rows.item(i).name,
+                  desc: res.rows.item(i).desc,
+                  completed: res.rows.item(i).completed,
+                  priority: res.rows.item(i).priority,
+                  parent_Task_id: res.rows.item(i).parent_Task_id,
+                  Entry_id: res.rows.item(i).Entry_id,
+                  Goal_id: res.rows.item(i).Goal_id
                 });
               }
 
