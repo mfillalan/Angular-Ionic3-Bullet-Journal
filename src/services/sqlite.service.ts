@@ -622,7 +622,7 @@ export class SqliteService {
      * @resolves rowid: number
      */
     deleteTask(rowid: number): Promise<number> {
-
+      console.log("deleteTask() Deleting rowid: " + rowid);
       return new Promise((resolve, reject) => {
 
         this.connect()
@@ -630,10 +630,10 @@ export class SqliteService {
 
           db.executeSql('DELETE FROM Task WHERE rowid = ?', [rowid])
           .then(res => {
-            console.log("Deleted Task rowid: " + res.insertId);
+            console.log("Deleted Task rowid: " + rowid);
             console.log("Number of rows affected: " + res.rowsAffected);
 
-            resolve(res.insertId);
+            resolve(rowid);
           })
           .catch(e => {
             console.log("!! Error: ");
@@ -756,6 +756,30 @@ export class SqliteService {
         })
         .catch(e => {
           console.log(e);
+          reject(e);
+        });
+
+      });
+
+    }
+
+    updateTask(task: Task): Promise<Task> {
+
+      return new Promise((resolve, reject) => {
+
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql('UPDATE Task SET name = ?, desc = ?, completed = ?, priority = ?, parent_Task_id = ?, Entry_id = ?, Goal_id = ? WHERE rowid = ?',
+                          [task.name, task.desc, task.completed, task.priority, task.parent_Task_id, task.Entry_id, task.Goal_id, task.rowid])
+          .then(res => {
+            console.log("Task successfully updated.");
+            resolve(task);
+          })
+          .catch(e => {
+            reject(e);
+          });
+        })
+        .catch(e => {
           reject(e);
         });
 

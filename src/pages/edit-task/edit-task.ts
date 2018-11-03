@@ -12,8 +12,12 @@ import { Task } from '../../models/task.model';
 export class EditTaskPage implements OnInit {
 
   //navParams {mode, task}
-  mode: string = "Add";
+  mode: string = "New"; //"New" or "Edit"
   task: Task;
+
+  task_name: string = "";
+  task_desc: string = "";
+  task_completed: boolean = false;
 
   date: Date = new Date();
 
@@ -26,6 +30,9 @@ export class EditTaskPage implements OnInit {
     this.mode = this.navParams.get('mode');
     if(this.mode == "Edit") {
       this.task = this.navParams.get('task');
+      this.task_name = this.task.name;
+      this.task_desc = this.task.desc;
+      this.task_completed = (this.task.completed == 1 ? true : false);
     }
   }
 
@@ -34,7 +41,7 @@ export class EditTaskPage implements OnInit {
     this.date = new Date();
   }
 
-  onAddItem(form: NgForm) {
+  onSubmit(form: NgForm) {
 
     this.sqliteService.getEntryRowId(this.date).then((entryId: number) => {
 

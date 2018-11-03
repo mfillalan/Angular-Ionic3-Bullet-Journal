@@ -20,24 +20,35 @@
     {{ date.getDate() + " || " + dayNames[date.getDay()] }}
   </p>
 
-  <form>
-    <ion-list>
+  <ion-list>
 
-      <span *ngIf="this.sqliteService.tasks.length > 0">
-        <ion-item *ngFor="let task of this.sqliteService.tasks; let i=index">
-          <ion-checkbox item-start [checked]="task.completed == 1"></ion-checkbox>
+    <span *ngIf="this.sqliteService.tasks.length > 0">
+      <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index">
+
+        <ion-item>
+          <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)"></ion-checkbox>
           <ion-label>
             <h2>{{ task.name }}</h2>
           </ion-label>
+          <button ion-button icon-only (click)="editTask(task)" item-end>
+            <ion-icon name="create"></ion-icon>
+          </button>
         </ion-item>
-      </span>
 
-      <ion-item *ngIf="this.sqliteService.tasks.length == 0">
-          <h2>No Tasks</h2>
-      </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" icon-only (click)="deleteTask(task.rowid)">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </ion-item-options>
+    </ion-item-sliding>
+    </span>
 
-    </ion-list>
-  </form>
+    <ion-item *ngIf="this.sqliteService.tasks.length == 0">
+        <h2>No Tasks</h2>
+    </ion-item>
+
+  </ion-list>
+
   <button ion-button icon-only (click)="createNewTask()">
     <ion-icon name="add"></ion-icon>
   </button>

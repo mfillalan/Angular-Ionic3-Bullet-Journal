@@ -9,11 +9,11 @@
 
 <ion-content padding>
 
-  <form #f="ngForm" (ngSubmit)="onAddItem(f)">
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
     <ion-list>
       <ion-item>
         <ion-label fixed>Name</ion-label>
-        <ion-input ngModel
+        <ion-input [(ngModel)]="task_name"
             type="text"
             name="taskName"
             placeholder="Workout, study, etc.."
@@ -23,7 +23,7 @@
 
       <ion-item>
         <ion-label fixed>Description</ion-label>
-        <ion-textarea ngModel
+        <ion-textarea [(ngModel)]="task_desc"
             name="taskDesc"
             placeholder="Enter a description"
             required>
@@ -32,7 +32,7 @@
 
       <ion-item>
         <ion-label fixed>Completed?</ion-label>
-        <ion-checkbox ngModel name="taskCompleted" checked="false"></ion-checkbox>
+        <ion-checkbox [(ngModel)]="task_completed" name="taskCompleted" checked="false"></ion-checkbox>
       </ion-item>
 
     </ion-list>

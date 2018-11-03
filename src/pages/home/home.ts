@@ -42,4 +42,31 @@ export class HomePage {
     this.navCtrl.push(EditTaskPage, {mode: "Edit", task: task});
   }
 
+  deleteTask(rowid: number) {
+    console.log("Deleting rowid: " + rowid);
+    this.sqliteService.deleteTask(rowid).then((rowid: number) => {
+      var index: number = this.sqliteService.tasks.findIndex(item => item.rowid === rowid);
+      this.sqliteService.tasks.splice(index, 1);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
+  changeCompleted(task: Task) {
+    if(task.completed == 0) {
+      task.completed = 1;
+    }
+    else {
+      task.completed = 0;
+    }
+    this.sqliteService.updateTask(task).then((rTask: Task) => {
+      var index: number = this.sqliteService.tasks.findIndex(item => item.rowid === rTask.rowid);
+      this.sqliteService.tasks[index] = rTask;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
 }
