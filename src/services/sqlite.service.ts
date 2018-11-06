@@ -724,7 +724,6 @@ export class SqliteService {
                 });
               }
 
-              this.tasks = tasks;
               console.log("Successfully added ( " + res.rows.length + ") tasks to array.");
               resolve(tasks);
 
@@ -745,13 +744,19 @@ export class SqliteService {
 
         this.getEntryRowId(date).then((entryId: number) => {
 
-          this.getTasksByEntryId(entryId).then((tasks: Task[]) => {
-            resolve(tasks);
-          })
-          .catch(e => {
-            console.log(e);
-            reject(e);
-          });
+          if(entryId == -1) {
+            var task: Task[] = [];
+            resolve(task);
+          }
+          else {
+            this.getTasksByEntryId(entryId).then((tasks: Task[]) => {
+              resolve(tasks);
+            })
+            .catch(e => {
+              console.log(e);
+              reject(e);
+            });
+          }
 
         })
         .catch(e => {

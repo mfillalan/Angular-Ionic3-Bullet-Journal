@@ -1,6 +1,6 @@
 import { SqliteService } from './../../services/sqlite.service';
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavParams, ViewController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { Task } from '../../models/task.model';
 
@@ -21,8 +21,8 @@ export class EditTaskPage implements OnInit {
 
   date: Date = new Date();
 
-  constructor(public navCtrl: NavController,
-              public navParams: NavParams,
+  constructor(public navParams: NavParams,
+              public viewCtrl: ViewController,
               private sqliteService: SqliteService) {
   }
 
@@ -59,9 +59,9 @@ export class EditTaskPage implements OnInit {
         this.sqliteService.addEntry(this.date).then((entryId: number) => {
           this.sqliteService.addTask(new Task(null, form.value.taskName, form.value.taskDesc, completed, 0, null, entryId, null))
             .then((task: Task) => {
-              this.sqliteService.tasks.push(task);
+              //this.sqliteService.tasks.push(task);
               form.reset();
-              this.navCtrl.pop();
+              this.viewCtrl.dismiss(task);
             })
             .catch(e => {
               console.log(e);
@@ -72,9 +72,9 @@ export class EditTaskPage implements OnInit {
         //entryid found
         this.sqliteService.addTask(new Task(null, form.value.taskName, form.value.taskDesc, completed, 0, null, entryId, null))
           .then((task: Task) => {
-            this.sqliteService.tasks.push(task);
+            //this.sqliteService.tasks.push(task);
             form.reset();
-            this.navCtrl.pop();
+            this.viewCtrl.dismiss(task);
           })
           .catch(e => {
             console.log(e);

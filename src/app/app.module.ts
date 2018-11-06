@@ -1,4 +1,3 @@
-import { SqliteService } from './../services/sqlite.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -7,16 +6,22 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite';
 import { Toast } from '@ionic-native/toast';
+import { DatePicker } from '@ionic-native/date-picker';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { EditTaskPage } from '../pages/edit-task/edit-task';
+import { CalendarViewPage } from './../pages/calendar-view/calendar-view';
+
+import { SqliteService } from './../services/sqlite.service';
+
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    EditTaskPage
+    EditTaskPage,
+    CalendarViewPage
   ],
   imports: [
     BrowserModule,
@@ -27,7 +32,8 @@ import { EditTaskPage } from '../pages/edit-task/edit-task';
   entryComponents: [
     MyApp,
     HomePage,
-    EditTaskPage
+    EditTaskPage,
+    CalendarViewPage
   ],
   providers: [
     StatusBar,
@@ -35,7 +41,8 @@ import { EditTaskPage } from '../pages/edit-task/edit-task';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SQLite,
     Toast,
-    SqliteService
+    SqliteService,
+    DatePicker
   ]
 })
 export class AppModule {}
