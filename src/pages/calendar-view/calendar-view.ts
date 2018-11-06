@@ -1,3 +1,4 @@
+import { Task_Entry } from './../../models/task_entry.model';
 import { Task } from './../../models/task.model';
 import { SqliteService } from './../../services/sqlite.service';
 import { Component, Renderer } from '@angular/core';
@@ -71,12 +72,47 @@ export class CalendarViewPage {
 
     /////////////
     var thisNumOfDays: number = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
+    var tasksWithinDate: Task_Entry[];
+    this.sqliteService.getTaskByDateRange(new Date(this.date.getFullYear(), this.date.getMonth(), 1), new Date(this.date.getFullYear(), this.date.getMonth(), thisNumOfDays))
+    .then((tasks: Task_Entry[]) => {
+      //TODO: create a MODEL of Task and Entry relationship inner join
+      tasksWithinDate = tasks;
+
+
+      if(tasksWithinDate.length > 0) {
+        for(let i = 0; i < thisNumOfDays; i++) {
+          let indexOfEvent = tasksWithinDate.findIndex(data => data.entry_date == this.sqliteService.dateToFormattedString(new Date(this.date.getFullYear(),  this.date.getMonth(), i + 1)));
+          if(indexOfEvent == -1) {
+            //none found
+            this.daysWithEvents.push(false);
+          }
+          else {
+            this.daysWithEvents.push(true);
+          }
+        }
+      }
+      else {
+        for(let i = 0; i < thisNumOfDays; i++) {
+          this.daysWithEvents.push(false);
+        }
+      }
+    })
+    .catch(e => {
+      console.log(e);
+    });
 
     for(let i = 0; i < thisNumOfDays; i++) {
       this.daysInThisMonth.push(i + 1);
-      this.daysWithEvents.push(false);
 
-      this.sqliteService.getTasksByDate(new Date(this.date.getFullYear(), this.date.getMonth(), i + 1))
+      /*
+      if(tasksWithinDate.length > 0) {
+        //let indexOfEvent = tasksWithinDate.findIndex(data => data.)
+      }
+      */
+
+      //this.daysWithEvents.push(false);
+
+      /*this.sqliteService.getTasksByDate(new Date(this.date.getFullYear(), this.date.getMonth(), i + 1))
       .then((tasks: Task[]) => {
         if(tasks.length == 0) {
           this.daysWithEvents[i] = false;
@@ -88,6 +124,7 @@ export class CalendarViewPage {
       .catch(e => {
         console.log(e);
       });
+      */
     }
 
     ////////////

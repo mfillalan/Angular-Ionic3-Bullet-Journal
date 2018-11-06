@@ -6,6 +6,7 @@ import { Injectable } from "@angular/core";
 //import { Storage } from "@ionic/storage";
 import { Task } from "../models/task.model";
 import { Toast } from '@ionic-native/toast';
+import { Task_Entry } from '../models/task_entry.model';
 
 @Injectable()
 export class SqliteService {
@@ -766,6 +767,49 @@ export class SqliteService {
 
       });
 
+    }
+
+    getTaskByDateRange(startDate: Date, endDate: Date): Promise<Task_Entry[]> {
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql('SELECT Task.rowid AS Task_rowid, Task.name, Task.desc, Task.completed, Task.priority, Task.parent_Task_id, Task.Entry_id, Task.Goal_id, Entry.rowid AS Entry_rowid, Entry.date FROM Task INNER JOIN Entry ON Entry.rowid = Task.Entry_id WHERE Entry.date BETWEEN ? AND ?', [this.dateToFormattedString(startDate), this.dateToFormattedString(endDate)])
+          .then(res => {
+            console.log("getTaskByDateRange() results: ");
+            console.log(res);
+            var task_entry : Task_Entry[] = [];
+
+            if(res.rows.length > 0) {
+
+              for(var i = 0; i < res.rows.length; i++) {
+                task_entry.push({
+                  task_rowid: res.rows.item(i).Task_rowid,
+                  task_name: res.rows.item(i).name,
+                  task_desc: res.rows.item(i).desc,
+                  task_completed: res.rows.item(i).completed,
+                  task_priority: res.rows.item(i).priority,
+                  task_parent_Task_id: res.rows.item(i).parent_Task_id,
+                  task_Entry_id: res.rows.item(i).Entry_id,
+                  task_Goal_id: res.rows.item(i).Goal_id,
+                  entry_rowid: res.rows.item(i).Entry_rowid,
+                  entry_date: res.rows.item(i).date
+                });
+
+              }
+
+            }
+
+            resolve(task_entry);
+
+          })
+          .catch(e => {
+            reject(e);
+          });
+        })
+        .catch(e => {
+          reject(e);
+        });
+      });
     }
 
     updateTask(task: Task): Promise<Task> {
