@@ -1,3 +1,4 @@
+import { CalendarPopoverPage } from './../pages/calendar-popover/calendar-popover';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -14,6 +15,7 @@ import { EditTaskPage } from '../pages/edit-task/edit-task';
 import { CalendarViewPage } from './../pages/calendar-view/calendar-view';
 
 import { SqliteService } from './../services/sqlite.service';
+import { AutoHideDirective } from '../directives/auto-hide/auto-hide';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { SqliteService } from './../services/sqlite.service';
     MyApp,
     HomePage,
     EditTaskPage,
-    CalendarViewPage
+    CalendarViewPage,
+    CalendarPopoverPage,
+    AutoHideDirective
   ],
   imports: [
     BrowserModule,
@@ -33,7 +37,8 @@ import { SqliteService } from './../services/sqlite.service';
     MyApp,
     HomePage,
     EditTaskPage,
-    CalendarViewPage
+    CalendarViewPage,
+    CalendarPopoverPage
   ],
   providers: [
     StatusBar,

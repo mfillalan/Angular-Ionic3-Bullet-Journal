@@ -2,9 +2,8 @@ import { CalendarViewPage } from './../calendar-view/calendar-view';
 import { SqliteService } from './../../services/sqlite.service';
 import { EditTaskPage } from './../edit-task/edit-task';
 import { Component } from '@angular/core';
-import { NavController, ModalController } from 'ionic-angular';
+import { NavController, ModalController, FabContainer } from 'ionic-angular';
 import { Task } from '../../models/task.model';
-import { DatePicker } from '@ionic-native/date-picker';
 
 @Component({
   selector: 'page-home',
@@ -18,16 +17,17 @@ export class HomePage {
   dayNames: string[] = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
   date: Date = new Date();
+  todaysDate: Date = new Date();
 
   constructor(public navCtrl: NavController,
               public modalCtrl: ModalController,
-              public sqliteService: SqliteService,
-              private datePicker: DatePicker) {
+              public sqliteService: SqliteService) {
   }
 
 
   ionViewDidLoad() {
     console.log('[home.ts] Entering ionViewDidLoad() --------------');
+    this.todaysDate = new Date();
     this.date = new Date();
     this.sqliteService.createAllTables();
     this.sqliteService.getTasksByDate(this.date);
@@ -35,29 +35,13 @@ export class HomePage {
 
   ionViewWillEnter() {
     console.log('[home.ts] Entering ionViewWillEnter() ------------');
+    this.todaysDate = new Date();
+    this.sqliteService.getTasksByDate(this.date);
   }
 
   changeDate(curDate: Date) {
     let presentCalendar = this.modalCtrl.create(CalendarViewPage);
     presentCalendar.present();
-    /*
-    this.datePicker.show({
-      date: curDate,
-      mode: 'date'
-    })
-    .then(
-      (date: Date) => {
-        this.date = date;
-        this.sqliteService.getTasksByDate(this.date).then((tasks: Task[]) => {
-          this.sqliteService.tasks = tasks;
-        });
-      },
-      err => { console.log(err); }
-    )
-    .catch(e => {
-      console.log(e);
-    });
-    */
   }
 
   createNewTask() {
@@ -106,6 +90,10 @@ export class HomePage {
     .catch(e => {
       console.log(e);
     });
+  }
+
+  closeFab(fab: FabContainer) {
+    fab.close();
   }
 
 }

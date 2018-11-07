@@ -22,8 +22,8 @@
   <ion-card>
     <ion-card-header>
       <ion-item (click)="changeDate(date)">
-        <h2>{{ monthNames[date.getMonth()] }}</h2>
-        <p>{{ date.getDate() + " || " + dayNames[date.getDay()] }}</p>
+        <h2>{{ monthNames[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear() }}</h2>
+        <p>{{ dayNames[date.getDay()] }}</p>
       </ion-item>
     </ion-card-header>
   </ion-card>
@@ -59,7 +59,7 @@
     </ion-list>
   </ion-card>
 
-  <ion-fab right bottom>
+  <ion-fab right bottom #fab (autohide)="closeFab(fab)">
 
     <button ion-fab color="secondary">
       <ion-icon name="add"></ion-icon>
