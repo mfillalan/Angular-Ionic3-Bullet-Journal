@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer, Output, EventEmitter } from '@angular/core';
+import { Directive, ElementRef, Output, EventEmitter } from '@angular/core';
 
 /**
  * Generated class for the AutoHideDirective directive.
@@ -14,18 +14,10 @@ import { Directive, ElementRef, Renderer, Output, EventEmitter } from '@angular/
 })
 export class AutoHideDirective {
 
-  fabToHide;
-
   @Output() autohide = new EventEmitter();
 
-  constructor(private _elementRef: ElementRef, private renderer: Renderer) {
+  constructor(private _elementRef: ElementRef) {
     console.log('Hello AutoHideDirective Directive');
-  }
-
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    this.fabToHide = this._elementRef.nativeElement.getElementsByClassName("fab")[0];
   }
 
   onClick(targetElement) {

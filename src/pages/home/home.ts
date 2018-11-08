@@ -30,13 +30,14 @@ export class HomePage {
     this.todaysDate = new Date();
     this.date = new Date();
     this.sqliteService.createAllTables();
-    this.sqliteService.getTasksByDate(this.date);
+    this.sqliteService.getTasksByDate(this.date).then((tasks: Task[]) => {
+      this.sqliteService.tasks = tasks;
+    });
   }
 
   ionViewWillEnter() {
     console.log('[home.ts] Entering ionViewWillEnter() ------------');
     this.todaysDate = new Date();
-    this.sqliteService.getTasksByDate(this.date);
   }
 
   changeDate(curDate: Date) {

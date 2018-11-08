@@ -835,6 +835,37 @@ export class SqliteService {
       });
 
     }
+
+    sortTask() {
+      let len = this.tasks.length;
+      //priority sort first
+      for(let i = len - 1; i >= 0; i--) {
+        for(let j = 1; j <= i; j++) {
+          if(this.tasks[j-1].priority > this.tasks[j].priority) {
+            let temp = this.tasks[j-1];
+            this.tasks[j-1] = this.tasks[j];
+            this.tasks[j] = temp;
+          }
+        }
+      }
+
+      for(let i = 0; i < len; i++) {
+        if(!(this.tasks[i].parent_Task_id == null)) {
+          //if not null
+          let index = this.tasks.findIndex(task => task.rowid == this.tasks[i].parent_Task_id);
+
+          if(index != -1) {
+            let temp = this.tasks[i];
+            //delete the element
+            this.tasks.splice(i, 1);
+            index = this.tasks.findIndex(task => task.rowid == this.tasks[i].parent_Task_id);
+            //insert deleted task below index
+            this.tasks.splice(index + 1, 0, temp);
+          }
+
+        }
+      }
+    }
     /* #endregion */
 
 }
