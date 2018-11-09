@@ -30,6 +30,14 @@
         </ion-textarea>
       </ion-item>
 
+      <ion-item>
+        <ion-label fixed>Parent Task</ion-label>
+        <ion-select [(ngModel)]="task_parentId" name="taskParent">
+          <ion-option value="-1" selected>None</ion-option>
+          <ion-option *ngFor="let option of currentTasks" [value]="option.rowid">{{ option.name }}</ion-option>
+        </ion-select>
+      </ion-item>
+
       <!--
       <ion-item>
         <ion-label fixed>Completed?</ion-label>

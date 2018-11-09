@@ -32,6 +32,7 @@ export class HomePage {
     this.sqliteService.createAllTables();
     this.sqliteService.getTasksByDate(this.date).then((tasks: Task[]) => {
       this.sqliteService.tasks = tasks;
+      this.sqliteService.sortTasks();
     });
   }
 
@@ -50,6 +51,7 @@ export class HomePage {
     presentNewTask.onDidDismiss(data => {
       if(data instanceof Task) {
         this.sqliteService.tasks.push(data);
+        this.sqliteService.sortTasks();
       }
     });
     presentNewTask.present();

@@ -545,6 +545,12 @@ export class SqliteService {
                 console.log("Successfully pushed { " + res.rows.length + " } records into tasks[] array.");
 
                 this.tasks = tasks;
+
+                //if more than 1 task was loaded then sort the tasks.
+                if(this.tasks.length > 1) {
+                  this.sortTasks();
+                }
+
                 resolve(tasks);
             })
             .catch(e => {
@@ -580,13 +586,11 @@ export class SqliteService {
             console.log("SQL Results: ");
             console.log(res);
 
-
             if(res.rowsAffected > 0) {
               console.log(res.insertId);
 
               this.getTaskByRowId(res.insertId).then((task: Task) => {
                 //console.log("Task successfully added and pushed to tasks[] array.");
-
                 resolve(task);
               })
               .catch(e => {
@@ -708,9 +712,12 @@ export class SqliteService {
         this.connect()
         .then((db: SQLiteObject) => {
           db.executeSql('SELECT * FROM Task WHERE Entry_id = ?', [entryId]).then(res => {
-            if(res.rows.length > 0) {
 
-              var tasks : Task[] = [];
+            var tasks : Task[] = [];
+
+            console.log(res);
+
+            if(res.rows.length > 0) {
 
               for(var i = 0; i < res.rows.length; i++) {
                 tasks.push({
@@ -729,7 +736,16 @@ export class SqliteService {
               resolve(tasks);
 
             }
+            else {
+              resolve(tasks);
+            }
+
+
           })
+          .catch(e => {
+            console.log("Error: ");
+            console.log(e);
+          });
         })
         .catch(e => {
           console.log("!! Error: ");
@@ -836,7 +852,7 @@ export class SqliteService {
 
     }
 
-    sortTask() {
+    sortTasks() {
       let len = this.tasks.length;
       //priority sort first
       for(let i = len - 1; i >= 0; i--) {
@@ -853,12 +869,12 @@ export class SqliteService {
         if(!(this.tasks[i].parent_Task_id == null)) {
           //if not null
           let index = this.tasks.findIndex(task => task.rowid == this.tasks[i].parent_Task_id);
-
+          console.log(this.tasks[i].parent_Task_id);
           if(index != -1) {
             let temp = this.tasks[i];
             //delete the element
             this.tasks.splice(i, 1);
-            index = this.tasks.findIndex(task => task.rowid == this.tasks[i].parent_Task_id);
+            index = this.tasks.findIndex(task => task.rowid == temp.parent_Task_id);
             //insert deleted task below index
             this.tasks.splice(index + 1, 0, temp);
           }

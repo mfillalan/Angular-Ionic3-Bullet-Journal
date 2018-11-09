@@ -34,7 +34,7 @@
       <span *ngIf="this.sqliteService.tasks.length > 0">
         <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index">
 
-          <ion-item>
+          <ion-item [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }">
             <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)"></ion-checkbox>
             <ion-label>
               <h2>{{ task.name }}</h2>
