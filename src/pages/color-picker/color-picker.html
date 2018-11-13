@@ -1,0 +1,37 @@
+<ion-content>
+
+    <ion-grid center text-center>
+
+        <ion-row class="row-dots">
+          <ion-col>
+            <button ion-button="dot" class="dot-color-1" [class.selected]="colorPicked == colorList[0]" (click)="changeColor(colorList[0])"></button>
+          </ion-col>
+          <ion-col>
+            <button ion-button="dot" class="dot-color-2" [class.selected]="colorPicked == colorList[1]" (click)="changeColor(colorList[1])"></button>
+          </ion-col>
+          <ion-col>
+            <button ion-button="dot" class="dot-color-3" [class.selected]="colorPicked == colorList[2]" (click)="changeColor(colorList[2])"></button>
+          </ion-col>
+          <ion-col>
+            <button ion-button="dot" class="dot-color-4" [class.selected]="colorPicked == colorList[3]" (click)="changeColor(colorList[3])"></button>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="row-dots">
+          <ion-col>
+            <button ion-button="dot" class="dot-color-5" [class.selected]="colorPicked == colorList[4]" (click)="changeColor(colorList[4])"></button>
+          </ion-col>
+          <ion-col>
+            <button ion-button="dot" class="dot-color-6" [class.selected]="colorPicked == colorList[5]" (click)="changeColor(colorList[5])"></button>
+          </ion-col>
+          <ion-col>
+            <button ion-button="dot" class="dot-color-7" [class.selected]="colorPicked == colorList[6]" (click)="changeColor(colorList[6])"></button>
+          </ion-col>
+          <ion-col>
+            <button ion-button="dot" class="dot-color-8" [class.selected]="colorPicked == colorList[7]" (click)="changeColor(colorList[7])"></button>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+
+</ion-content>

@@ -32,20 +32,24 @@
     <ion-list>
 
       <span *ngIf="this.sqliteService.tasks.length > 0">
-        <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index">
+        <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }">
 
-          <ion-item [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }">
-            <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)"></ion-checkbox>
-            <ion-label>
-              <h2>{{ task.name }}</h2>
-            </ion-label>
+          <ion-item>
+            <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)" left></ion-checkbox>
+
+            <ion-chip item-content [ngStyle]="{'background-color': task.color}">
+              <ion-icon [name]="task.icon"></ion-icon>
+              <ion-label style="margin-left: 2px; margin-right: 2px;">{{ task.name }}</ion-label>
+            </ion-chip>
+            <!--
             <button ion-button icon-only (click)="editTask(task)" item-end>
               <ion-icon name="create"></ion-icon>
             </button>
+            -->
           </ion-item>
 
-          <ion-item-options side="right">
-            <button ion-button color="danger" icon-only (click)="deleteTask(task.rowid)">
+          <ion-item-options side="left">
+            <button ion-button icon-only color="cleared" (click)="deleteTask(task.rowid)">
               <ion-icon name="trash"></ion-icon>
             </button>
           </ion-item-options>

@@ -47,6 +47,7 @@ export class HomePage {
   }
 
   createNewTask() {
+    /*
     let presentNewTask = this.modalCtrl.create(EditTaskPage, {mode: "New"});
     presentNewTask.onDidDismiss(data => {
       if(data instanceof Task) {
@@ -55,17 +56,31 @@ export class HomePage {
       }
     });
     presentNewTask.present();
+    */
+    this.navCtrl.push(EditTaskPage, {mode: "New"});
   }
 
   editTask(task: Task) {
+    /*
     let presentEditTask = this.modalCtrl.create(EditTaskPage, {mode: "Edit", task: task});
+
+    presentEditTask.onDidDismiss(data => {
+      if(data instanceof Task) {
+        let index = this.sqliteService.tasks.findIndex(item => item.rowid == task.rowid);
+        this.sqliteService.tasks[index] = task;
+        this.sqliteService.sortTasks();
+      }
+    })
+
     presentEditTask.present();
+    */
+   this.navCtrl.push(EditTaskPage, { mode: "Edit", task: task });
   }
 
   deleteTask(rowid: number) {
     console.log("Deleting rowid: " + rowid);
     this.sqliteService.deleteTask(rowid).then((rowid: number) => {
-      var index: number = this.sqliteService.tasks.findIndex(item => item.rowid === rowid);
+      var index: number = this.sqliteService.tasks.findIndex(item => item.rowid == rowid);
       this.sqliteService.tasks.splice(index, 1);
     })
     .catch(e => {

@@ -1,0 +1,18 @@
+page-icon-picker {
+
+  .dot {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin: 10px auto;
+    position: relative;
+    border: 1px solid $list-md-border-color;
+    background-color: #e5e5e5;
+  }
+
+  .dot.selected {
+    border-width: 2px;
+    border-color: #327eff;
+  }
+
+}

@@ -1,3 +1,4 @@
+import { ColorPickerPage } from './../pages/color-picker/color-picker';
 import { CalendarPopoverPage } from './../pages/calendar-popover/calendar-popover';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -16,6 +17,7 @@ import { CalendarViewPage } from './../pages/calendar-view/calendar-view';
 
 import { SqliteService } from './../services/sqlite.service';
 import { AutoHideDirective } from '../directives/auto-hide/auto-hide';
+import { IconPickerPage } from '../pages/icon-picker/icon-picker';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { AutoHideDirective } from '../directives/auto-hide/auto-hide';
     EditTaskPage,
     CalendarViewPage,
     CalendarPopoverPage,
-    AutoHideDirective
+    AutoHideDirective,
+    ColorPickerPage,
+    IconPickerPage
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,9 @@ import { AutoHideDirective } from '../directives/auto-hide/auto-hide';
     HomePage,
     EditTaskPage,
     CalendarViewPage,
-    CalendarPopoverPage
+    CalendarPopoverPage,
+    ColorPickerPage,
+    IconPickerPage
   ],
   providers: [
     StatusBar,

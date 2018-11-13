@@ -1,0 +1,11 @@
+<ion-content>
+
+  <ion-slides slidesPerView="5" loop="true">
+    <ion-slide *ngFor="let icon of iconList; let i = index">
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == icon" (click)="changeIcon(icon)">
+        <ion-icon [name]="icon"></ion-icon>
+      </button>
+    </ion-slide>
+  </ion-slides>
+
+</ion-content>

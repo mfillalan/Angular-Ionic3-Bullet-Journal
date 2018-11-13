@@ -14,7 +14,7 @@ export class SqliteService {
     //private storageKey: string = "task";
 
     //SQLite properties
-    private dbName: string = "bulletjourn.db";
+    private dbName: string = "bjv001.db";
     private dbLocation: string = "default";
 
     //Array variables that hold the SQLite Table data.
@@ -492,7 +492,9 @@ export class SqliteService {
                   priority INTEGER,
                   Goal_id INTEGER,
                   Entry_id NOT NULL,
-                  parent_Task_id INTEGER)`, {} as any)
+                  parent_Task_id INTEGER,
+                  icon TEXT,
+                  color TEXT)`, {} as any)
           .then(res => {
               console.log("Sqlite CREATE TABLE [Task] results: ");
               console.log(res);
@@ -539,7 +541,9 @@ export class SqliteService {
                                     priority: res.rows.item(i).priority,
                                     Goal_id: res.rows.item(i).Goal_id,
                                     Entry_id: res.rows.item(i).Entry_id,
-                                    parent_Task_id: res.rows.item(i).parent_Task_id});
+                                    parent_Task_id: res.rows.item(i).parent_Task_id,
+                                    icon: res.rows.item(i).icon,
+                                    color: res.rows.item(i).color});
                 }
 
                 console.log("Successfully pushed { " + res.rows.length + " } records into tasks[] array.");
@@ -580,8 +584,8 @@ export class SqliteService {
         .then((db: SQLiteObject) => {
           console.log("Executing SQL [INSERT INTO Task VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)] ....");
 
-          db.executeSql("INSERT INTO Task VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)",
-                        [task.name, task.desc, task.completed, task.priority, task.Goal_id, task.Entry_id, task.parent_Task_id])
+          db.executeSql("INSERT INTO Task (name, desc, completed, priority, Goal_id, Entry_id, parent_Task_id, icon, color) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [task.name, task.desc, task.completed, task.priority, task.Goal_id, task.Entry_id, task.parent_Task_id, task.icon, task.color])
           .then(res => {
             console.log("SQL Results: ");
             console.log(res);
@@ -680,7 +684,9 @@ export class SqliteService {
               res.rows.item(0).priority,
               res.rows.item(0).parent_Task_id,
               res.rows.item(0).Entry_id,
-              res.rows.item(0).Goal_id);
+              res.rows.item(0).Goal_id,
+              res.rows.item(0).icon,
+              res.rows.item(0).color);
 
               resolve(task);
             }
@@ -728,7 +734,9 @@ export class SqliteService {
                   priority: res.rows.item(i).priority,
                   parent_Task_id: res.rows.item(i).parent_Task_id,
                   Entry_id: res.rows.item(i).Entry_id,
-                  Goal_id: res.rows.item(i).Goal_id
+                  Goal_id: res.rows.item(i).Goal_id,
+                  icon: res.rows.item(i).icon,
+                  color: res.rows.item(i).color
                 });
               }
 
@@ -807,6 +815,8 @@ export class SqliteService {
                   task_parent_Task_id: res.rows.item(i).parent_Task_id,
                   task_Entry_id: res.rows.item(i).Entry_id,
                   task_Goal_id: res.rows.item(i).Goal_id,
+                  task_icon: res.rows.item(i).icon,
+                  task_color: res.rows.item(i).color,
                   entry_rowid: res.rows.item(i).Entry_rowid,
                   entry_date: res.rows.item(i).date
                 });

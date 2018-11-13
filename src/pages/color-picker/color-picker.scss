@@ -1,0 +1,51 @@
+page-color-picker {
+  .row-dots {
+    text-align: center;
+
+    .dot {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      margin: 10px auto;
+      position: relative;
+      border: 1px solid $list-md-border-color;
+    }
+  }
+
+  .dot-color-1 {
+    background-color: #cecece;
+  }
+
+  .dot-color-2 {
+    background-color: #65bc51;
+  }
+
+  .dot-color-3 {
+    background-color: #9abc51;
+  }
+
+  .dot-color-4 {
+    background-color: #417cdb;
+  }
+
+  .dot-color-5 {
+    background-color: #e9ed15;
+  }
+
+  .dot-color-6 {
+    background-color: #ffa323;
+  }
+
+  .dot-color-7 {
+    background-color: #dd2e2e;
+  }
+
+  .dot-color-8 {
+    background-color: #c936d1;
+  }
+
+  .dot.selected {
+    border-width: 2px;
+    border-color: #327eff;
+  }
+}
