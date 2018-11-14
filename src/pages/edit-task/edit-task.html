@@ -59,6 +59,22 @@
     </button>
     <ion-input type="text" hidden [(ngModel)]="task_icon" name="taskIcon"></ion-input>
 
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <h2>Preview</h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-chip [ngStyle]="{'background-color': task_color}">
+            <ion-icon [name]="task_icon"></ion-icon>
+            <ion-label>{{ task_name }}</ion-label>
+          </ion-chip>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
     <button ion-button
         type="submit"
         [disabled]="!f.valid"

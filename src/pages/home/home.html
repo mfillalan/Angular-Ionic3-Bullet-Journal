@@ -28,18 +28,18 @@
     </ion-card-header>
   </ion-card>
 
-  <ion-card>
+
     <ion-list>
 
       <span *ngIf="this.sqliteService.tasks.length > 0">
         <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }">
 
-          <ion-item>
+          <ion-item no-lines>
             <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)" left></ion-checkbox>
 
-            <ion-chip item-content [ngStyle]="{'background-color': task.color}">
+            <ion-chip item-content [ngStyle]="{'background-color': task.color}" [attr.id]="'task_' + task.rowid">
               <ion-icon [name]="task.icon"></ion-icon>
-              <ion-label style="margin-left: 2px; margin-right: 2px;">{{ task.name }}</ion-label>
+              <ion-label>{{ task.name }}</ion-label>
             </ion-chip>
             <!--
             <button ion-button icon-only (click)="editTask(task)" item-end>
@@ -61,7 +61,6 @@
       </ion-item>
 
     </ion-list>
-  </ion-card>
 
   <ion-fab right bottom #fab (autohide)="closeFab(fab)">
 

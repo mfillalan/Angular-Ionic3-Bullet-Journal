@@ -4,6 +4,7 @@ import { EditTaskPage } from './../edit-task/edit-task';
 import { Component } from '@angular/core';
 import { NavController, ModalController, FabContainer } from 'ionic-angular';
 import { Task } from '../../models/task.model';
+import * as anime from 'animejs';
 
 @Component({
   selector: 'page-home',
@@ -47,34 +48,32 @@ export class HomePage {
   }
 
   createNewTask() {
-    /*
     let presentNewTask = this.modalCtrl.create(EditTaskPage, {mode: "New"});
-    presentNewTask.onDidDismiss(data => {
+    presentNewTask.onWillDismiss(data => {
       if(data instanceof Task) {
-        this.sqliteService.tasks.push(data);
-        this.sqliteService.sortTasks();
+        anime({
+          targets: '#task_' + data.rowid,
+          translateX: 100,
+          opacity: 0,
+          easing: 'easeInElastic',
+          elasticity: 100,
+          direction: 'reverse'
+        });
       }
     });
     presentNewTask.present();
-    */
-    this.navCtrl.push(EditTaskPage, {mode: "New"});
   }
 
   editTask(task: Task) {
-    /*
     let presentEditTask = this.modalCtrl.create(EditTaskPage, {mode: "Edit", task: task});
 
     presentEditTask.onDidDismiss(data => {
       if(data instanceof Task) {
-        let index = this.sqliteService.tasks.findIndex(item => item.rowid == task.rowid);
-        this.sqliteService.tasks[index] = task;
-        this.sqliteService.sortTasks();
+
       }
     })
 
     presentEditTask.present();
-    */
-   this.navCtrl.push(EditTaskPage, { mode: "Edit", task: task });
   }
 
   deleteTask(rowid: number) {

@@ -5,6 +5,7 @@ import { IonicPage, NavParams, ViewController, NavController, PopoverController 
 import { NgForm } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { ColorPickerPage } from '../color-picker/color-picker';
+import * as anime from 'animejs';
 
 @IonicPage()
 @Component({
@@ -130,10 +131,10 @@ export class EditTaskPage implements OnInit {
               .then((task: Task) => {
                 //this.sqliteService.tasks.push(task);
                 form.reset();
-                //this.viewCtrl.dismiss(task);
                 this.sqliteService.tasks.push(task);
                 this.sqliteService.sortTasks();
-                this.navCtrl.pop();
+                //this.navCtrl.pop();
+                this.viewCtrl.dismiss(task);
               })
               .catch(e => {
                 console.log(e);
@@ -158,10 +159,11 @@ export class EditTaskPage implements OnInit {
             .then((task: Task) => {
               //this.sqliteService.tasks.push(task);
               form.reset();
-              //this.viewCtrl.dismiss(task);
+
               this.sqliteService.tasks.push(task);
               this.sqliteService.sortTasks();
-              this.navCtrl.pop();
+              //this.navCtrl.pop();
+              this.viewCtrl.dismiss(task);
             })
             .catch(e => {
               console.log(e);

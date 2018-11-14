@@ -29,6 +29,7 @@
     "@ionic/storage": "^2.2.0",
     "@ngx-translate/core": "^11.0.0",
     "@ngx-translate/http-loader": "^4.0.0",
+    "animejs": "^2.2.0",
     "cordova-android": "7.1.1",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "^2.0.2",
