@@ -56,8 +56,9 @@ export class HomePage {
           translateX: 100,
           opacity: 0,
           easing: 'easeInElastic',
-          elasticity: 100,
-          direction: 'reverse'
+          elasticity: 300,
+          direction: 'reverse',
+          duration: 1500
         });
       }
     });

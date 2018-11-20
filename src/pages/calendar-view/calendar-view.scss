@@ -12,6 +12,7 @@ page-calendar-view {
   .col {
     text-align: center;
     padding: 2px;
+    margin: 4px auto;
   }
 
   .last-month, .next-month {
@@ -21,6 +22,7 @@ page-calendar-view {
 
   .currentDate, .otherDate {
     padding: 5px;
+    margin-bottom: 8px;
   }
 
   .currentDate {
@@ -36,7 +38,7 @@ page-calendar-view {
   }
 
   .event-bullet {
-    margin: 2px auto;
+    margin: auto;
     height: 5px;
     width: 5px;
     background-color: green;

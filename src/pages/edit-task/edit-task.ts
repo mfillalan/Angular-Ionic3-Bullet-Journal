@@ -105,6 +105,10 @@ export class EditTaskPage implements OnInit {
     });
   }
 
+  closeModal() {
+    this.viewCtrl.dismiss();
+  }
+
   onSubmit(form: NgForm) {
 
     if(this.mode == "New") {

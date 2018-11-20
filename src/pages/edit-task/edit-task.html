@@ -2,6 +2,11 @@
 
   <ion-navbar>
     <ion-title>{{ mode }} Task</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()" color="danger">
+        Cancel
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -40,6 +45,31 @@
         </ion-select>
       </ion-item>
 
+      <ion-item>
+        <ion-label fixed>Color</ion-label>
+        <button item-content
+                ion-button
+                icon-only
+                type="button"
+                [ngStyle]="{'background-color': task_color}"
+                (click)="presentColorPopover($event)"
+                block>
+          <ion-icon name="color-palette"></ion-icon>
+        </button>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>Icon</ion-label>
+        <button item-content
+                ion-button
+                icon-only
+                type="button"
+                (click)="presentIconPopover($event)"
+                block>
+            <ion-icon [name]="task_icon"></ion-icon>
+        </button>
+      </ion-item>
+
       <!--
       <ion-item>
         <ion-label fixed>Completed?</ion-label>
@@ -49,31 +79,57 @@
 
     </ion-list>
 
-    <button ion-button="dot" type="button" icon-only [ngStyle]="{'background-color': task_color}" (click)="presentColorPopover($event)">
-        <ion-icon name="color-palette"></ion-icon>
-    </button>
-    <ion-input type="text" hidden [(ngModel)]="task_color" name="taskColor"></ion-input>
+  <!--
+    <ion-grid>
 
-    <button ion-button="dot" type="button" icon-only (click)="presentIconPopover($event)">
-      <ion-icon [name]="task_icon"></ion-icon>
-    </button>
+      <ion-row align-items-center>
+        <ion-col col-4>
+          <p>Color</p>
+        </ion-col>
+        <ion-col col-8>
+          <button ion-button="dot" type="button" icon-only [ngStyle]="{'background-color': task_color}" (click)="presentColorPopover($event)">
+            <ion-icon name="color-palette"></ion-icon>
+          </button>
+          <ion-input type="text" hidden [(ngModel)]="task_color" name="taskColor"></ion-input>
+        </ion-col>
+      </ion-row>
+
+      <ion-row align-items-center>
+        <ion-col col-4>
+          <p>Icon</p>
+        </ion-col>
+        <ion-col col-8>
+          <button ion-button="dot" type="button" icon-only (click)="presentIconPopover($event)">
+              <ion-icon [name]="task_icon"></ion-icon>
+          </button>
+          <ion-input type="text" hidden [(ngModel)]="task_icon" name="taskIcon"></ion-input>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  -->
+
+    <ion-input type="text" hidden [(ngModel)]="task_color" name="taskColor"></ion-input>
     <ion-input type="text" hidden [(ngModel)]="task_icon" name="taskIcon"></ion-input>
 
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <h2>Preview</h2>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-chip [ngStyle]="{'background-color': task_color}">
-            <ion-icon [name]="task_icon"></ion-icon>
-            <ion-label>{{ task_name }}</ion-label>
-          </ion-chip>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-card>
+      <ion-card-header>
+        Preview
+      </ion-card-header>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-12 center style="text-align: center;">
+            <ion-chip [ngStyle]="{'background-color': task_color}">
+              <ion-icon [name]="task_icon"></ion-icon>
+              <ion-label>{{ task_name }}</ion-label>
+            </ion-chip>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    </ion-card>
+
 
     <button ion-button
         type="submit"

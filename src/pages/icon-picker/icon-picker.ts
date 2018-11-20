@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as anime from 'animejs';
 
 
 @IonicPage()
@@ -28,6 +29,23 @@ export class IconPickerPage implements OnInit{
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad IconPickerPage');
+  }
+
+  ionViewDidEnter(){
+    anime({
+      targets: '#iconSlider',
+      opacity: 1,
+      easing: 'linear',
+      duration: 500,
+    });
+  }
+
+  ionViewDidLeave(){
+    anime({
+      targets: '#iconSlider',
+      opacity: 0,
+      easing: 'linear'
+    });
   }
 
   changeIcon(icon: string) {

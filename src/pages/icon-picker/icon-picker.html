@@ -1,11 +1,192 @@
 <ion-content>
 
-  <ion-slides slidesPerView="5" loop="true">
+  <div style="opacity: 0;" id="iconSlider">
+  <ion-slides slidesPerView="5" loop="false">
     <ion-slide *ngFor="let icon of iconList; let i = index">
       <button ion-button="dot" icon-only [class.selected]="iconPicked == icon" (click)="changeIcon(icon)">
         <ion-icon [name]="icon"></ion-icon>
       </button>
     </ion-slide>
   </ion-slides>
+  </div>
 
+  <!--
+  <ion-slides slidesPerView="5" loop="false">
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[0]" (click)="changeIcon(iconList[0])">
+        <ion-icon [name]="iconList[0]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[1]" (click)="changeIcon(iconList[1])">
+        <ion-icon [name]="iconList[1]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[2]" (click)="changeIcon(iconList[2])">
+        <ion-icon [name]="iconList[2]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[3]" (click)="changeIcon(iconList[3])">
+        <ion-icon [name]="iconList[3]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[4]" (click)="changeIcon(iconList[4])">
+        <ion-icon [name]="iconList[4]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[5]" (click)="changeIcon(iconList[5])">
+        <ion-icon [name]="iconList[5]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[6]" (click)="changeIcon(iconList[6])">
+        <ion-icon [name]="iconList[6]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[7]" (click)="changeIcon(iconList[7])">
+        <ion-icon [name]="iconList[7]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[8]" (click)="changeIcon(iconList[8])">
+        <ion-icon [name]="iconList[8]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[9]" (click)="changeIcon(iconList[9])">
+        <ion-icon [name]="iconList[9]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[10]" (click)="changeIcon(iconList[10])">
+        <ion-icon [name]="iconList[10]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[11]" (click)="changeIcon(iconList[11])">
+        <ion-icon [name]="iconList[11]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[12]" (click)="changeIcon(iconList[12])">
+        <ion-icon [name]="iconList[12]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[13]" (click)="changeIcon(iconList[13])">
+        <ion-icon [name]="iconList[13]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[14]" (click)="changeIcon(iconList[14])">
+        <ion-icon [name]="iconList[14]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[15]" (click)="changeIcon(iconList[15])">
+        <ion-icon [name]="iconList[15]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[16]" (click)="changeIcon(iconList[16])">
+        <ion-icon [name]="iconList[16]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[17]" (click)="changeIcon(iconList[17])">
+        <ion-icon [name]="iconList[17]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[18]" (click)="changeIcon(iconList[18])">
+        <ion-icon [name]="iconList[18]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[19]" (click)="changeIcon(iconList[19])">
+        <ion-icon [name]="iconList[19]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[20]" (click)="changeIcon(iconList[20])">
+        <ion-icon [name]="iconList[20]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[21]" (click)="changeIcon(iconList[21])">
+        <ion-icon [name]="iconList[21]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[22]" (click)="changeIcon(iconList[22])">
+        <ion-icon [name]="iconList[22]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[23]" (click)="changeIcon(iconList[23])">
+        <ion-icon [name]="iconList[23]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[24]" (click)="changeIcon(iconList[24])">
+        <ion-icon [name]="iconList[24]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[25]" (click)="changeIcon(iconList[25])">
+        <ion-icon [name]="iconList[25]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[26]" (click)="changeIcon(iconList[26])">
+        <ion-icon [name]="iconList[26]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[27]" (click)="changeIcon(iconList[27])">
+        <ion-icon [name]="iconList[27]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[28]" (click)="changeIcon(iconList[28])">
+        <ion-icon [name]="iconList[28]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[29]" (click)="changeIcon(iconList[29])">
+        <ion-icon [name]="iconList[29]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[30]" (click)="changeIcon(iconList[30])">
+        <ion-icon [name]="iconList[30]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[31]" (click)="changeIcon(iconList[31])">
+        <ion-icon [name]="iconList[31]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[32]" (click)="changeIcon(iconList[32])">
+        <ion-icon [name]="iconList[32]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[33]" (click)="changeIcon(iconList[33])">
+        <ion-icon [name]="iconList[33]"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide>
+      <button ion-button="dot" icon-only [class.selected]="iconPicked == iconList[34]" (click)="changeIcon(iconList[34])">
+        <ion-icon [name]="iconList[34]"></ion-icon>
+      </button>
+    </ion-slide>
+  </ion-slides>
+  -->
 </ion-content>

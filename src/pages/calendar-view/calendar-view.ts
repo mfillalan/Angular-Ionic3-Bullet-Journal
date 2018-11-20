@@ -75,7 +75,6 @@ export class CalendarViewPage {
     var tasksWithinDate: Task_Entry[];
     this.sqliteService.getTaskByDateRange(new Date(this.date.getFullYear(), this.date.getMonth(), 1), new Date(this.date.getFullYear(), this.date.getMonth(), thisNumOfDays))
     .then((tasks: Task_Entry[]) => {
-      //TODO: create a MODEL of Task and Entry relationship inner join
       tasksWithinDate = tasks;
 
 

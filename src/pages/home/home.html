@@ -1,43 +1,45 @@
 <ion-header>
   <ion-navbar>
+
     <ion-buttons left>
+      <!--
         <button ion-button menuToggle>
           <ion-icon name="menu"></ion-icon>
         </button>
+      -->
     </ion-buttons>
 
     <ion-title>
       Bullet Journal
     </ion-title>
+
+
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <p>
-
-  </p>
-  <p>
-
-  </p>
-  <ion-card>
-    <ion-card-header>
-      <ion-item (click)="changeDate(date)">
-        <h2>{{ monthNames[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear() }}</h2>
-        <p>{{ dayNames[date.getDay()] }}</p>
-      </ion-item>
-    </ion-card-header>
-  </ion-card>
-
+  <ion-grid>
+    <ion-row align-items-center>
+      <ion-col col-12 style="text-align: center;">
+        <h3><em>{{ monthNames[date.getMonth()] + " " + date.getFullYear()}}</em></h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12>
+        <h3><span class="day">{{ date.getDate() }}</span><span class="dayOfWeek">{{ dayNames[date.getDay()] }}</span></h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
     <ion-list>
 
       <span *ngIf="this.sqliteService.tasks.length > 0">
         <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }">
 
-          <ion-item no-lines>
+          <ion-item no-lines [attr.id]="'task_' + task.rowid">
             <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)" left></ion-checkbox>
 
-            <ion-chip item-content [ngStyle]="{'background-color': task.color}" [attr.id]="'task_' + task.rowid">
+            <ion-chip item-content [ngStyle]="{'background-color': task.color}">
               <ion-icon [name]="task.icon"></ion-icon>
               <ion-label>{{ task.name }}</ion-label>
             </ion-chip>
@@ -64,13 +66,15 @@
 
   <ion-fab right bottom #fab (autohide)="closeFab(fab)">
 
-    <button ion-fab color="secondary">
+    <button ion-fab color="secondary" (click)="createNewTask()">
       <ion-icon name="add"></ion-icon>
     </button>
 
+    <!--
     <ion-fab-list side="top">
       <button ion-fab (click)="createNewTask()"><ion-icon name="add"></ion-icon></button>
     </ion-fab-list>
+    -->
 
   </ion-fab>
 
