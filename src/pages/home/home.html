@@ -34,28 +34,30 @@
     <ion-list>
 
       <span *ngIf="this.sqliteService.tasks.length > 0">
-        <ion-item-sliding *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }">
 
-          <ion-item no-lines [attr.id]="'task_' + task.rowid">
+          <ion-item no-lines *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }" [attr.id]="'task_' + task.rowid">
             <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)" left></ion-checkbox>
 
-            <ion-chip item-content [ngStyle]="{'background-color': task.color}">
-              <ion-icon [name]="task.icon"></ion-icon>
-              <ion-label>{{ task.name }}</ion-label>
-            </ion-chip>
+            <div item-content [dragula]="dragulaName">
+              <ion-chip  [ngStyle]="{'background-color': task.color}" [attr.id]="i">
+                <ion-icon [name]="task.icon"></ion-icon>
+                <ion-label>{{ task.name }}</ion-label>
+              </ion-chip>
+            </div>
+
             <!--
             <button ion-button icon-only (click)="editTask(task)" item-end>
               <ion-icon name="create"></ion-icon>
             </button>
             -->
           </ion-item>
-
+          <!--
           <ion-item-options side="left">
             <button ion-button icon-only color="cleared" (click)="deleteTask(task.rowid)">
               <ion-icon name="trash"></ion-icon>
             </button>
           </ion-item-options>
-      </ion-item-sliding>
+          -->
       </span>
 
       <ion-item *ngIf="this.sqliteService.tasks.length == 0">
@@ -76,6 +78,32 @@
     </ion-fab-list>
     -->
 
+  </ion-fab>
+
+
+  <ion-fab>
+    <button ion-fab color="danger" [ngClass]="{ 'fabDeleteDisplay': fab_delete_display == true, 'fabDeleteHide': fab_delete_display == false }" id="delete_fab">
+      <ion-icon name="trash"></ion-icon>
+    </button>
+  </ion-fab>
+
+  <ion-fab style="opacity: 0;">
+    <button ion-fab style="position: fixed; right: 10px; bottom: 76px" [dragula]="dragulaName" id="delete_task">
+      <ion-icon name="trash"></ion-icon>
+    </button>
+  </ion-fab>
+
+
+  <ion-fab>
+    <button ion-fab color="primary" [ngClass]="{ 'fabEditDisplay': fab_edit_display, 'fabEditHide': !fab_edit_display }"  id="edit_fab">
+      <ion-icon name="create"></ion-icon>
+    </button>
+  </ion-fab>
+
+  <ion-fab style="opacity: 0;">
+    <button ion-fab style="position: fixed; right: 10px; bottom: 142px" [dragula]="dragulaName" id="edit_task">
+      <ion-icon name="create"></ion-icon>
+    </button>
   </ion-fab>
 
   <!--

@@ -79,4 +79,39 @@ page-home {
     height: 20px;
   }
 
+  /* added to the source element while its mirror is dragged */
+  .gu-transit{
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+  }
+
+  .fabDeleteDisplay {
+    position: fixed;
+    right: 10px;
+    bottom: 76px;
+  }
+
+  .fabDeleteHide {
+    position: fixed;
+    right: -90px;
+    bottom: 76px;
+  }
+
+  .fabEditDisplay {
+    position: fixed;
+    right: 10px;
+    bottom: 142px;
+  }
+
+  .fabEditHide {
+    position: fixed;
+    right: -90px;
+    bottom: 142px;
+  }
+
+  .fab {
+    contain: layout;
+  }
+
 }

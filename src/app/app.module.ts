@@ -18,6 +18,7 @@ import { CalendarViewPage } from './../pages/calendar-view/calendar-view';
 import { SqliteService } from './../services/sqlite.service';
 import { AutoHideDirective } from '../directives/auto-hide/auto-hide';
 import { IconPickerPage } from '../pages/icon-picker/icon-picker';
+import { DragulaModule, DragulaService } from 'ng2-dragula';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { IconPickerPage } from '../pages/icon-picker/icon-picker';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    DragulaModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -53,7 +55,8 @@ import { IconPickerPage } from '../pages/icon-picker/icon-picker';
     SQLite,
     Toast,
     SqliteService,
-    DatePicker
+    DatePicker,
+    DragulaService
   ]
 })
 export class AppModule {}

@@ -1,16 +1,20 @@
+import { DragulaService } from 'ng2-dragula';
 import { CalendarViewPage } from './../calendar-view/calendar-view';
 import { SqliteService } from './../../services/sqlite.service';
 import { EditTaskPage } from './../edit-task/edit-task';
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NavController, ModalController, FabContainer } from 'ionic-angular';
 import { Task } from '../../models/task.model';
 import * as anime from 'animejs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
+  //@ViewChild('delete_fab2') delete_fab;
+  //@ViewChild('edit_fab2') edit_fab;
 
   monthNames: string[] = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -20,11 +24,167 @@ export class HomePage {
   date: Date = new Date();
   todaysDate: Date = new Date();
 
+  subs = new Subscription();
+  dragulaName = "TASKS_DRAG";
+  dragging: boolean = false;
+  fab_edit_display: boolean = false;
+  fab_delete_display: boolean = false;
+
   constructor(public navCtrl: NavController,
               public modalCtrl: ModalController,
-              public sqliteService: SqliteService) {
+              public sqliteService: SqliteService,
+              private dragulaService: DragulaService) {
+
   }
 
+  ngOnInit() {
+    this.subs.add(this.dragulaService.drag(this.dragulaName)
+      .subscribe(({ name, el, source }) => {
+        console.log("Drag event for task initiated.");
+
+        anime.remove("#delete_fab");
+        anime.remove("#edit_fab");
+        anime({
+          targets: '#delete_fab',
+          translateX: -100,
+          rotate: -360,
+          easing: 'easeOutElastic',
+          elasticity: 300,
+          duration: 500
+        }).finished.then(() => {
+          //this.fab_delete_display = true;
+        });
+
+        anime({
+          targets: '#edit_fab',
+          translateX: -100,
+          rotate: -360,
+          easing: 'easeOutElastic',
+          elasticity: 300,
+          duration: 500
+        }).finished.then(() => {
+          //this.fab_edit_display = true;
+        });
+      })
+    );
+
+    this.subs.add(this.dragulaService.dragend(this.dragulaName)
+      .subscribe(({ name, el }) => {
+        console.log("Drag ended.");
+        anime.remove("#delete_fab");
+        anime.remove("#edit_fab");
+        anime({
+          targets: '#delete_fab',
+          translateX: 100,
+          rotate: 360,
+          easing: 'easeInElastic',
+          elasticity: 300,
+          duration: 500
+        }).finished.then(() => {
+          this.fab_delete_display = false;
+        });
+
+        anime({
+          targets: '#edit_fab',
+          translateX: 100,
+          rotate: 360,
+          easing: 'easeInElastic',
+          elasticity: 300,
+          duration: 500
+        }).finished.then(() => {
+          this.fab_edit_display = false;
+        });
+      })
+    );
+
+    this.subs.add(this.dragulaService.over(this.dragulaName)
+      .subscribe(({ name, el, container, source }) => {
+        //console.log("Hovering over:");
+        //console.log(container);
+        //console.log("Source: ");
+        //console.log(source);
+        if(container.id == "edit_task") {
+          console.log("Hovering over edit_task");
+
+          this.fab_edit_display = true;
+          this.animateHover(1.2, 800, 400, "#edit_fab");
+
+        }
+        if(container.id == "delete_task") {
+          console.log("Hovering over delete_task");
+
+          this.fab_delete_display = true;
+          this.animateHover(1.2, 800, 400, "#delete_fab");
+        }
+      })
+    );
+
+    this.subs.add(this.dragulaService.out(this.dragulaName)
+      .subscribe(({ name, el, container, source }) => {
+        if(container.id == "edit_task") {
+          console.log("Leaving edit_task");
+          this.animateHover(1, 600, 300, "#edit_fab");
+        }
+        if(container.id == "delete_task") {
+          console.log("Leaving delete_task");
+          this.animateHover(1, 600, 300, "#delete_fab");
+        }
+      })
+    );
+
+   this.subs.add(this.dragulaService.drop(this.dragulaName)
+    .subscribe(({ name, el, target, source, sibling }) => {
+      console.log("Drop event initiated.");
+      console.log("target: ");
+      console.log(target);
+      console.log("Source: ");
+      console.log(source);
+      console.log("Element: ");
+      console.log(el);
+      let taskIndex: number = Number(el.id);
+      if(target.id == "edit_task") {
+        this.editTask(this.sqliteService.tasks[taskIndex]);
+        this.dragulaService.find(this.dragulaName).drake.cancel(true);
+      }
+      else if(target.id == "delete_task") {
+        this.deleteTask(this.sqliteService.tasks[taskIndex].rowid);
+      }
+      else {
+        this.dragulaService.find(this.dragulaName).drake.cancel(true);
+      }
+
+    })
+  );
+
+
+
+    /*
+    this.subs.add(this.dragula.dragend(this.dragulaName)
+      .subscribe(({ name, el }) => {
+        console.log("Drag ended: ");
+        console.log("name: " + name + " element: ");
+        console.log(el);
+      })
+    );
+    */
+
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.subs.unsubscribe();
+  }
+
+  animateHover(scale: number, duration: number, elasticity: number, el: string) {
+    anime.remove(el);
+    anime({
+      targets: el,
+      scale: scale,
+      duration: duration,
+      elasticity: elasticity
+    });
+  }
 
   ionViewDidLoad() {
     console.log('[home.ts] Entering ionViewDidLoad() --------------');
