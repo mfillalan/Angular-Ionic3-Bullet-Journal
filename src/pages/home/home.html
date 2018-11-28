@@ -34,30 +34,25 @@
     <ion-list>
 
       <span *ngIf="this.sqliteService.tasks.length > 0">
-
+        <div [dragula]="dragulaName" style="background-color: transparent;">
           <ion-item no-lines *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }" [attr.id]="'task_' + task.rowid">
-            <ion-checkbox item-start [checked]="task.completed == 1" (ionChange)="changeCompleted(task)" left></ion-checkbox>
+            <ion-checkbox item-start
+              [checked]="task.completed == 1"
+              (ionChange)="changeCompleted(task)"
+              left
+              [ngClass]="{'disappear': dragging, 'reappear': !dragging}">
+            </ion-checkbox>
 
-            <div item-content [dragula]="dragulaName">
-              <ion-chip  [ngStyle]="{'background-color': task.color}" [attr.id]="i">
+            <div item-content >
+              <ion-chip  [ngStyle]="{'background-color': task.color}">
                 <ion-icon [name]="task.icon"></ion-icon>
                 <ion-label>{{ task.name }}</ion-label>
               </ion-chip>
             </div>
 
-            <!--
-            <button ion-button icon-only (click)="editTask(task)" item-end>
-              <ion-icon name="create"></ion-icon>
-            </button>
-            -->
           </ion-item>
-          <!--
-          <ion-item-options side="left">
-            <button ion-button icon-only color="cleared" (click)="deleteTask(task.rowid)">
-              <ion-icon name="trash"></ion-icon>
-            </button>
-          </ion-item-options>
-          -->
+
+        </div>
       </span>
 
       <ion-item *ngIf="this.sqliteService.tasks.length == 0">
@@ -66,17 +61,11 @@
 
     </ion-list>
 
-  <ion-fab right bottom #fab (autohide)="closeFab(fab)">
+  <ion-fab right bottom #fab>
 
     <button ion-fab color="secondary" (click)="createNewTask()">
       <ion-icon name="add"></ion-icon>
     </button>
-
-    <!--
-    <ion-fab-list side="top">
-      <button ion-fab (click)="createNewTask()"><ion-icon name="add"></ion-icon></button>
-    </ion-fab-list>
-    -->
 
   </ion-fab>
 
@@ -106,21 +95,4 @@
     </button>
   </ion-fab>
 
-  <!--
-  <button ion-button icon-only (click)="createNewTask()">
-    <ion-icon name="add"></ion-icon>
-  </button>
-  -->
-  <!--
-  <button ion-button (click)="loadEntry()">Load Entry</button>
-  <button ion-button (click)="deleteTasks()">Delete All Tasks</button>
-  -->
-  <!--
-  <ion-list>
-    <ion-item *ngFor="let entry of entries; let i=index">
-        <h2>Rowid: {{ entry.rowid}}</h2>
-        <p>Date: {{ entry.date }}</p>
-    </ion-item>
-  </ion-list>
-  -->
 </ion-content>

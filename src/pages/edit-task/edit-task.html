@@ -26,17 +26,6 @@
         </ion-input>
       </ion-item>
 
-      <!--
-      <ion-item>
-        <ion-label fixed>Description</ion-label>
-        <ion-textarea [(ngModel)]="task_desc"
-            name="taskDesc"
-            placeholder="Enter a description"
-            required>
-        </ion-textarea>
-      </ion-item>
-      -->
-
       <ion-item>
         <ion-label fixed>Parent Task</ion-label>
         <ion-select [(ngModel)]="task_parentId" name="taskParent">
@@ -70,44 +59,7 @@
         </button>
       </ion-item>
 
-      <!--
-      <ion-item>
-        <ion-label fixed>Completed?</ion-label>
-        <ion-checkbox [(ngModel)]="task_completed" name="taskCompleted" checked="false"></ion-checkbox>
-      </ion-item>
-      -->
-
     </ion-list>
-
-  <!--
-    <ion-grid>
-
-      <ion-row align-items-center>
-        <ion-col col-4>
-          <p>Color</p>
-        </ion-col>
-        <ion-col col-8>
-          <button ion-button="dot" type="button" icon-only [ngStyle]="{'background-color': task_color}" (click)="presentColorPopover($event)">
-            <ion-icon name="color-palette"></ion-icon>
-          </button>
-          <ion-input type="text" hidden [(ngModel)]="task_color" name="taskColor"></ion-input>
-        </ion-col>
-      </ion-row>
-
-      <ion-row align-items-center>
-        <ion-col col-4>
-          <p>Icon</p>
-        </ion-col>
-        <ion-col col-8>
-          <button ion-button="dot" type="button" icon-only (click)="presentIconPopover($event)">
-              <ion-icon [name]="task_icon"></ion-icon>
-          </button>
-          <ion-input type="text" hidden [(ngModel)]="task_icon" name="taskIcon"></ion-input>
-        </ion-col>
-      </ion-row>
-
-    </ion-grid>
-  -->
 
     <ion-input type="text" hidden [(ngModel)]="task_color" name="taskColor"></ion-input>
     <ion-input type="text" hidden [(ngModel)]="task_icon" name="taskIcon"></ion-input>

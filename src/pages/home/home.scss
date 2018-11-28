@@ -37,10 +37,12 @@ page-home {
   }
 
   .taskParent {
+    background-color: transparent;
     margin-left: 0px;
   }
 
   .taskChild {
+    background-color: transparent;
     margin-left: 20px;
   }
 
@@ -112,6 +114,14 @@ page-home {
 
   .fab {
     contain: layout;
+  }
+
+  .disappear {
+    display: none;
+  }
+
+  .reappear {
+    display: initial;
   }
 
 }

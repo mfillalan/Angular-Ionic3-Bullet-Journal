@@ -5,7 +5,7 @@ import { IonicPage, NavParams, ViewController, NavController, PopoverController 
 import { NgForm } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { ColorPickerPage } from '../color-picker/color-picker';
-import * as anime from 'animejs';
+//import * as anime from 'animejs';
 
 @IonicPage()
 @Component({

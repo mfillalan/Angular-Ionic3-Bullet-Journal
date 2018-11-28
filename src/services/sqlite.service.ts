@@ -23,11 +23,14 @@ export class SqliteService {
     public entries: Entry[] = [];
     public reusableTasks: ReusableTask[] = [];
 
-    constructor(private sqlite: SQLite, private toast: Toast) {}
+    constructor(private sqlite: SQLite, private toast: Toast) {
+      this.createAllTables();
+    }
 
     /* #region [Helper Functions] */
 
     createAllTables() {
+      console.log('createAllTables() entered...');
       this.createEntryTable();
       this.createGoalTable();
       this.createReusableTaskTable();
@@ -381,6 +384,88 @@ export class SqliteService {
 
     }
 
+    addGoal(goal: Goal): Promise<Goal> {
+
+      return new Promise((resolve, reject) => {
+
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql("INSERT INTO Goal (name, desc, amt_completed) VALUES (?, ?, ?)",
+                          [goal.name, goal.desc, goal.amt_completed])
+            .then(res => {
+              if(res.rowsAffected > 0) {
+                this.getGoalByRowId(res.insertId)
+                .then((rGoal: Goal) => {
+                  resolve(rGoal);
+                })
+                .catch(e => {
+                  console.log("!! Error: ");
+                  console.log(e);
+                  reject(e);
+                });
+              }
+            })
+            .catch(e => {
+              console.log("!! Error: ");
+              console.log(e);
+              reject(e);
+            });
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+        });
+
+      });
+
+    }
+
+    getGoalByRowId(rowid: number): Promise<Goal> {
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql("SELECT * FROM Goal WHERE rowid = ?", [rowid])
+          .then(res => {
+            if(res.rows.length > 0) {
+              var goal: Goal = new Goal(res.rows.item(0).rowid,
+                                        res.rows.item(0).name,
+                                        res.rows.item(0).desc,
+                                        res.rows.item(0).amt_completed);
+              resolve(goal);
+            }
+          })
+          .catch(e => {
+            console.log("!! Error: ");
+            console.log(e);
+            reject(e);
+          });
+        })
+        .catch(e => {
+          console.log("!! Error: ");
+          console.log(e);
+          reject(e);
+        });
+      });
+    }
+
+    updateGoal(goal: Goal): Promise<Goal> {
+      return new Promise((resolve, reject) => {
+        this.connect()
+        .then((db: SQLiteObject) => {
+          db.executeSql('UPDATE Goal SET name = ?, desc = ?, amt_completed = ? WHERE rowid = ?', [goal.name, goal.desc, goal.amt_completed, goal.rowid])
+          .then(res => {
+            resolve(goal);
+          })
+          .catch(e => {
+            reject(e);
+          })
+        })
+        .catch(e => {
+          reject(e);
+        });
+      });
+    }
+
     /* #endregion */
 
     /* #region [ReusableTask Table Functions] */
@@ -600,7 +685,7 @@ export class SqliteService {
               .catch(e => {
                 console.log("!! Error: ");
                 console.log(e);
-                reject("addTask(): Problem adding task to task array.")
+                reject("Problem getting task.")
               });
 
             }

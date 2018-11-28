@@ -16,7 +16,6 @@ import { EditTaskPage } from '../pages/edit-task/edit-task';
 import { CalendarViewPage } from './../pages/calendar-view/calendar-view';
 
 import { SqliteService } from './../services/sqlite.service';
-import { AutoHideDirective } from '../directives/auto-hide/auto-hide';
 import { IconPickerPage } from '../pages/icon-picker/icon-picker';
 import { DragulaModule, DragulaService } from 'ng2-dragula';
 
@@ -28,7 +27,6 @@ import { DragulaModule, DragulaService } from 'ng2-dragula';
     EditTaskPage,
     CalendarViewPage,
     CalendarPopoverPage,
-    AutoHideDirective,
     ColorPickerPage,
     IconPickerPage
   ],
