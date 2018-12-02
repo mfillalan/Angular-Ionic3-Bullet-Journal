@@ -59,6 +59,22 @@
         </button>
       </ion-item>
 
+      <ion-item>
+        <ion-label fixed>Goal</ion-label>
+        <ion-select [(ngModel)]="task_goalId" name="taskGoal">
+          <ion-option value="-1" selected>None</ion-option>
+          <ion-option *ngFor="let goal of sqliteService.goals" [value]="goal.rowid">{{ goal.name }}</ion-option>
+        </ion-select>
+        <button item-end
+                ion-button
+                icon-only
+                type="button"
+                (click)="editGoals()"
+                style="width: 40px">
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-item>
+
     </ion-list>
 
     <ion-input type="text" hidden [(ngModel)]="task_color" name="taskColor"></ion-input>

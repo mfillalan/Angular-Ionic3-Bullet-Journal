@@ -1,3 +1,4 @@
+import { EditGoalModalPage } from './../pages/edit-goal-modal/edit-goal-modal';
 import { ColorPickerPage } from './../pages/color-picker/color-picker';
 import { CalendarPopoverPage } from './../pages/calendar-popover/calendar-popover';
 import { BrowserModule } from '@angular/platform-browser';
@@ -18,6 +19,9 @@ import { CalendarViewPage } from './../pages/calendar-view/calendar-view';
 import { SqliteService } from './../services/sqlite.service';
 import { IconPickerPage } from '../pages/icon-picker/icon-picker';
 import { DragulaModule, DragulaService } from 'ng2-dragula';
+import { EditGoalPage } from '../pages/edit-goal/edit-goal';
+import { ChartsModule } from 'ng2-charts';
+import { ChartActivityPage } from '../pages/chart-activity/chart-activity';
 
 
 @NgModule({
@@ -28,10 +32,14 @@ import { DragulaModule, DragulaService } from 'ng2-dragula';
     CalendarViewPage,
     CalendarPopoverPage,
     ColorPickerPage,
-    IconPickerPage
+    IconPickerPage,
+    EditGoalPage,
+    ChartActivityPage,
+    EditGoalModalPage
   ],
   imports: [
     BrowserModule,
+    ChartsModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     DragulaModule.forRoot()
@@ -44,7 +52,10 @@ import { DragulaModule, DragulaService } from 'ng2-dragula';
     CalendarViewPage,
     CalendarPopoverPage,
     ColorPickerPage,
-    IconPickerPage
+    IconPickerPage,
+    EditGoalPage,
+    ChartActivityPage,
+    EditGoalModalPage
   ],
   providers: [
     StatusBar,

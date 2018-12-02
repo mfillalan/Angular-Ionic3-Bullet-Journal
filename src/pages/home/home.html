@@ -34,13 +34,12 @@
     <ion-list>
 
       <span *ngIf="this.sqliteService.tasks.length > 0">
-        <div [dragula]="dragulaName" style="background-color: transparent;">
+        <div [dragula]="dragulaName" style="background-color: transparent !important;">
           <ion-item no-lines *ngFor="let task of this.sqliteService.tasks; let i=index" [ngClass]="{ 'taskChild': task.parent_Task_id != -1, 'taskParent': task.parent_Task_id == -1 }" [attr.id]="'task_' + task.rowid">
             <ion-checkbox item-start
               [checked]="task.completed == 1"
               (ionChange)="changeCompleted(task)"
-              left
-              [ngClass]="{'disappear': dragging, 'reappear': !dragging}">
+              left>
             </ion-checkbox>
 
             <div item-content >
@@ -60,6 +59,8 @@
       </ion-item>
 
     </ion-list>
+
+    <button ion-button block (click)="openChart()">Chart</button>
 
   <ion-fab right bottom #fab>
 

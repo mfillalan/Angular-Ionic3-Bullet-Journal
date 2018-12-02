@@ -15,39 +15,44 @@
 
 <ion-content padding>
 
-  <ion-scroll style="height: 200px">
-    <ion-list>
 
-      <span *ngIf="sqliteService.goals.length == 0">
-        <ion-item>
-          No Goals
-        </ion-item>
-      </span>
+<ion-list>
 
-      <span *ngIf="sqliteService.goals.length > 0">
-        <ion-item *ngFor="let goal of sqliteService.goals">
-          <ion-label>{{ goal.name }}</ion-label>
-          <p>{{ goal.desc }}</p>
-        </ion-item>
-      </span>
-
-    </ion-list>
-  </ion-scroll>
-
-  <form [formGroup]="goalForm" (ngSubmit)="onSubmit()" )>
-
+  <span *ngIf="sqliteService.goals.length == 0">
     <ion-item>
-      <ion-label>Name</ion-label>
-      <ion-input type="text" formControlName="name"></ion-input>
+      No Goals
     </ion-item>
+  </span>
 
-    <ion-item>
-      <ion-label>Description</ion-label>
-      <ion-textarea formControlName="desc"></ion-textarea>
-    </ion-item>
+  <span *ngIf="sqliteService.goals.length > 0">
+    <ion-item-sliding *ngFor="let goal of sqliteService.goals" #slidingItem>
+      <ion-item>
+        <ion-label>{{ goal.name }}</ion-label>
+        <p>{{ goal.desc }}</p>
+      </ion-item>
 
-    <button type="submit" ion-button block>{{ button_str }}</button>
+      <ion-item-options side="left">
+        <button ion-button color="danger" (click)="deleteGoal(goal.rowid, slidingItem)">
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
 
-  </form>
+      <ion-item-options side="right">
+        <button ion-button (click)="editGoalPrompt(goal, slidingItem)">
+          <ion-icon name="create"></ion-icon>
+          Edit
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </span>
+
+  </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab color="secondary" (click)="newGoalPrompt()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 
 </ion-content>

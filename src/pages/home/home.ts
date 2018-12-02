@@ -1,3 +1,4 @@
+import { ChartActivityPage } from './../chart-activity/chart-activity';
 import { DragulaService } from 'ng2-dragula';
 import { CalendarViewPage } from './../calendar-view/calendar-view';
 import { SqliteService } from './../../services/sqlite.service';
@@ -43,18 +44,18 @@ export class HomePage implements OnInit, OnDestroy {
       .subscribe(({ name, el, source }) => {
         console.log("Drag event for task initiated.");
         this.dragging = true;
-        anime.remove("#delete_fab");
-        anime.remove("#edit_fab");
+        anime.remove("#delete_fab, #edit_fab");
+        //anime.remove("#edit_fab");
 
         anime({
-          targets: '#delete_fab',
+          targets: '#delete_fab, #edit_fab',
           translateX: -100,
           rotate: -360,
           easing: 'easeOutElastic',
           elasticity: 300,
           duration: 500
         });
-
+        /*
         anime({
           targets: '#edit_fab',
           translateX: -100,
@@ -63,7 +64,7 @@ export class HomePage implements OnInit, OnDestroy {
           elasticity: 300,
           duration: 500
         });
-
+        */
       })
     );
 
@@ -71,10 +72,10 @@ export class HomePage implements OnInit, OnDestroy {
       .subscribe(({ name, el }) => {
         console.log("Drag ended.");
         this.dragging = false;
-        anime.remove("#delete_fab");
-        anime.remove("#edit_fab");
+        anime.remove("#delete_fab, #edit_fab");
+        //anime.remove("#edit_fab");
         anime({
-          targets: '#delete_fab',
+          targets: '#delete_fab, #edit_fab',
           translateX: 100,
           rotate: 360,
           easing: 'easeInElastic',
@@ -82,8 +83,9 @@ export class HomePage implements OnInit, OnDestroy {
           duration: 500
         }).finished.then(() => {
           this.fab_delete_display = false;
+          this.fab_edit_display = false;
         });
-
+        /*
         anime({
           targets: '#edit_fab',
           translateX: 100,
@@ -94,6 +96,7 @@ export class HomePage implements OnInit, OnDestroy {
         }).finished.then(() => {
           this.fab_edit_display = false;
         });
+        */
       })
     );
 
@@ -173,6 +176,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  openChart() {
+    this.navCtrl.push(ChartActivityPage);
+  }
+
   animateHover(scale: number, duration: number, elasticity: number, el: string) {
     anime.remove(el);
     anime({
@@ -225,13 +232,11 @@ export class HomePage implements OnInit, OnDestroy {
   editTask(task: Task) {
     let presentEditTask = this.modalCtrl.create(EditTaskPage, {mode: "Edit", task: task});
 
-    /*
     presentEditTask.onDidDismiss(data => {
       if(data instanceof Task) {
 
       }
     });
-    */
 
     presentEditTask.present();
   }

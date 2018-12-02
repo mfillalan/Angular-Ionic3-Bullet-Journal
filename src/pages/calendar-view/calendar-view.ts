@@ -1,5 +1,4 @@
 import { Task_Entry } from './../../models/task_entry.model';
-import { Task } from './../../models/task.model';
 import { SqliteService } from './../../services/sqlite.service';
 import { Component, Renderer } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';

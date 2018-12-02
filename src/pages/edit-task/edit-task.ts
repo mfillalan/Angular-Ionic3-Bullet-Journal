@@ -1,10 +1,11 @@
 import { IconPickerPage } from './../icon-picker/icon-picker';
 import { SqliteService } from './../../services/sqlite.service';
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavParams, ViewController, NavController, PopoverController } from 'ionic-angular';
+import { IonicPage, NavParams, ViewController, NavController, PopoverController, ModalController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { ColorPickerPage } from '../color-picker/color-picker';
+import { EditGoalPage } from '../edit-goal/edit-goal';
 //import * as anime from 'animejs';
 
 @IonicPage()
@@ -27,6 +28,7 @@ export class EditTaskPage implements OnInit {
   task_parentId: number = -1;
   task_icon: string = "";
   task_color: string = "";
+  task_goalId: number = -1;
   submit_text: string;
 
   date: Date = new Date();
@@ -34,8 +36,9 @@ export class EditTaskPage implements OnInit {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public viewCtrl: ViewController,
-              private sqliteService: SqliteService,
-              public popoverCtrl: PopoverController) {
+              public sqliteService: SqliteService,
+              public popoverCtrl: PopoverController,
+              public modalCtrl: ModalController) {
   }
 
   ngOnInit() {
@@ -60,6 +63,7 @@ export class EditTaskPage implements OnInit {
       this.task_parentId = this.task.parent_Task_id;
       this.task_icon = this.task.icon;
       this.task_color = this.task.color;
+      this.task_goalId = this.task.Goal_id;
     }
     else {
       this.task_parentId = -1;
@@ -107,6 +111,15 @@ export class EditTaskPage implements OnInit {
 
   closeModal() {
     this.viewCtrl.dismiss();
+  }
+
+  editGoals() {
+    this.navCtrl.push(EditGoalPage);
+    /*
+    let presentGoalPage = this.modalCtrl.create(EditGoalPage);
+
+    presentGoalPage.present();
+    */
   }
 
   onSubmit(form: NgForm) {
