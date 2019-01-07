@@ -10,7 +10,9 @@ Instructions on how to run on an android device.
 ### Prerequisites
 
 Install:
+
 -Android Studio
+
 -Java SDK
 
 You must have an android device or android emulator.
